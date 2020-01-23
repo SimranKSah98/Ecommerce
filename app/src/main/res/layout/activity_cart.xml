@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.activity.CartActivity">
+    tools:context=".activity.CartActivity">
 
 
 
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".activity.activity.HomeActivity">
+        tools:context=".activity.HomeActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cart_recycler_view"
