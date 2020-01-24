@@ -92,13 +92,15 @@ public class SignupActivity extends AppCompatActivity {
         inputPassword = (EditText) findViewById(R.id.password);
         inputName = (EditText) findViewById(R.id.name);
         imageView = (ImageView) findViewById(R.id.imageView);
-        select = (Button) findViewById(R.id.buttonChoose);
-        upload = (Button) findViewById(R.id.buttonUpload);
+//        select = (Button) findViewById(R.id.buttonChoose);
+//        upload = (Button) findViewById(R.id.buttonUpload);
     }
 
 
-    public void sendtoken(Signupbody signupBody) {
-        App.getApp().getRetrofit().create(APIInterface.class).signup(signupBody).enqueue(
+    public void sendtoken(Signupbody signupBody)
+    {
+        App.getApp().getRetrofit().create(APIInterface.class).signup(signupBody).enqueue
+                (
                 new Callback<CustomerDetails>() {
                     @Override
                     public void onResponse(Call<CustomerDetails> call, Response<CustomerDetails> response) {

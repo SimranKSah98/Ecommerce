@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.App;
 import com.example.myapplication.R;
+import com.example.myapplication.controller.APIInterface;
 import com.example.myapplication.pojo.AddToCartResponseBody;
 import com.example.myapplication.pojo.BaseResponse;
 import com.example.myapplication.pojo.ProductDescription;
-import com.example.myapplication.controller.APIInterface;
 
 import java.util.ArrayList;
 import java.util.List;
