@@ -105,7 +105,6 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<CustomerDetails> call, Response<CustomerDetails> response) {
                         if (response.isSuccessful()) {
-                            // success logic
                             Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                             startActivity(intent);
                             Toast.makeText(SignupActivity.this, "Successfully", Toast.LENGTH_SHORT).show();

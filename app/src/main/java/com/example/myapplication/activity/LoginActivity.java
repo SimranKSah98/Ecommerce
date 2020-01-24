@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private SignInButton signInButton;
     private int RC_SIGN_IN=1;
     private GoogleSignInClient googleSignInClient;
+    private CustomerDetails customerDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,14 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         initView();
         initClickListerner();
+//
+//        SharedPreferences sharedPreferences = getSharedPreferences("login_details", MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putBoolean("login_details", true);
+//        editor.commit();
+
+
+
     }
 
     private void initView() {
@@ -149,10 +158,14 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<CustomerDetails> call, Response<CustomerDetails> response) {
                         if (response.isSuccessful()) {
-                            SharedPreferences sharedPreferences=getSharedPreferences("com.example.myapplication.loginsignupactivity", Context.MODE_PRIVATE);
-                            sharedPreferences.getString("email", null);
+                            customerDetails=response.body();
+                            SharedPreferences sharedPreferences=getSharedPreferences("com.example.myapplication.activity", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor=sharedPreferences.edit();
-                            editor.putString("email",requestBody.getCustomerEmail());
+                            editor.clear();
+                          //  editor.putString("customerId",requestBody.)
+                            editor.putString("customerEmailId",requestBody.getCustomerEmail());
+                            editor.putBoolean("login_details",true);
+                            editor.putString("customerId",customerDetails.getCustomerId());
                             editor.commit();
                             Intent intent=new Intent(LoginActivity.this,HomeActivity.class);
                             startActivity(intent);

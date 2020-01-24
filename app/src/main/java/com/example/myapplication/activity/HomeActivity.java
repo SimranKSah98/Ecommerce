@@ -68,14 +68,20 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+
+        if (!sharedPreferences.contains("login_details")) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("login_details", false);
+            editor.commit();
+        }
+
         initRecyclerView();
         initBottomNavigation();
         initRetrofitAndCallApi();
         apiCallback();
-        SharedPreferences sharedPreferences = getSharedPreferences("login_details", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("login", false);
-        editor.commit();
 
         searchView = (SearchView) findViewById(R.id.search);
         searchView.setOnQueryTextListener(HomeActivity.this);
@@ -107,8 +113,9 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.dashboard:
-                        SharedPreferences sharedPreferences = getSharedPreferences("user_details", MODE_PRIVATE);
-                        Boolean value = sharedPreferences.getBoolean("login", false);
+                        SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+
+                        Boolean value = sharedPreferences.getBoolean("login_details", false);
                         if (!value) {
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                             overridePendingTransition(0, 0);
@@ -131,8 +138,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
         });
     }
 
-    public void initRetrofitAndCallApi()
-    {
+    public void initRetrofitAndCallApi() {
         retrofit = App.getApp().getRetrofit();
         APIInterface api = retrofit.create(APIInterface.class);
         call = api.getProducts();

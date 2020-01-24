@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.example.myapplication.R;
+import com.example.myapplication.pojo.ProductsBoughtItem;
 import com.example.myapplication.pojo.ProductsItem;
 
 import java.util.List;
@@ -20,9 +21,9 @@ import java.util.List;
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
 
-    List<ProductsItem> cartList;
+    List<ProductsBoughtItem> cartList;
 
-    public CartAdapter(List<ProductsItem> cartList) {
+    public CartAdapter(List<ProductsBoughtItem> cartList) {
         this.cartList = cartList;
     }
 
@@ -36,10 +37,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final CartAdapter.ViewHolder holder, int position) {
 
 
-        final ProductsItem productsItem=cartList.get(position);
+        final ProductsBoughtItem productsItem=cartList.get(position);
         Glide.with(holder.imageView.getContext()).applyDefaultRequestOptions( new RequestOptions().placeholder(R.drawable.ic_launcher_background)).load(productsItem.getImage()).into(holder.imageView);
         holder.name.setText(productsItem.getName());
-        holder.price.setText(productsItem.getPrice());
+        String price=String.valueOf(productsItem.getPrice());
+        holder.price.setText(price);
         holder.quantity.setNumber(String.valueOf(productsItem.getQuantity()));
 
 
