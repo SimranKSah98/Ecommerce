@@ -5,7 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.App;
 import com.example.myapplication.R;
+import com.example.myapplication.adapter.ListViewAdapter;
 import com.example.myapplication.pojo.BaseResponse;
 import com.example.myapplication.pojo.CategoriesItem;
 import com.example.myapplication.pojo.Home;
@@ -25,6 +30,7 @@ import com.example.myapplication.pojo.ProductsItem;
 import com.example.myapplication.adapter.CategoryItemAdapter;
 import com.example.myapplication.adapter.PopularProductsAdapter;
 import com.example.myapplication.controller.APIInterface;
+import com.example.myapplication.pojo.SearchResponse;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -35,7 +41,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class HomeActivity extends AppCompatActivity implements PopularProductsAdapter.OnCardListener, CategoryItemAdapter.OnCategoryNameListener {
+public class HomeActivity extends AppCompatActivity implements PopularProductsAdapter.OnCardListener, CategoryItemAdapter.OnCategoryNameListener, SearchView.OnQueryTextListener{
 
     private Retrofit retrofit;
     private Call<BaseResponse<Home>> call;
@@ -51,6 +57,12 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     private Home home;
 
 
+    ListView listView;
+    ListViewAdapter adapter;
+    SearchView searchView;
+    List<SearchResponse> arraylist = new ArrayList<SearchResponse>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +76,9 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("login", false);
         editor.commit();
+
+        searchView = (SearchView) findViewById(R.id.search);
+        searchView.setOnQueryTextListener(HomeActivity.this);
     }
 
 
@@ -78,6 +93,10 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(popularProductsAdapter);
+
+        listView = (ListView) findViewById(R.id.listview);
+        listView.bringToFront();
+
     }
 
     private void initBottomNavigation() {
@@ -112,7 +131,8 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
         });
     }
 
-    public void initRetrofitAndCallApi() {
+    public void initRetrofitAndCallApi()
+    {
         retrofit = App.getApp().getRetrofit();
         APIInterface api = retrofit.create(APIInterface.class);
         call = api.getProducts();
@@ -160,6 +180,43 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                 list.addAll(home.getCategories().get(i).getProducts());
         }
         popularProductsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query)
+    {
+        App.getApp().getRetrofit().create(APIInterface.class).getSearchList(query).enqueue(
+                new Callback<BaseResponse<List<SearchResponse>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<SearchResponse>>> call, Response<BaseResponse<List<SearchResponse>>> response) {
+
+                        arraylist.clear();
+                        arraylist=response.body().getData();
+                        adapter = new ListViewAdapter(HomeActivity.this, arraylist);
+                        listView.setAdapter(adapter);
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent intent=new Intent(HomeActivity.this, ProductDetailsOnSearchActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
+                        Log.e("Check",t.getMessage());
+                    }
+
+                });
+        arraylist.clear();
+        return false;
+    }
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        listView.clearChoices();
+        listView.setAdapter(null);
+        return false;
     }
 
 }
