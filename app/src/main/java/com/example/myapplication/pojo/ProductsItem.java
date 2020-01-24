@@ -23,6 +23,18 @@ public class ProductsItem implements Serializable {
 	@SerializedName("name")
 	private String name;
 
+	@SerializedName("productdescription")
+	private ProductDescription productDescription;
+
+
+	public ProductDescription getProductDescription() {
+		return productDescription;
+	}
+
+	public void setProductDescription(ProductDescription productDescription) {
+		this.productDescription = productDescription;
+	}
+
 	public void setImage(String image){
 		this.image = image;
 	}

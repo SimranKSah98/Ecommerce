@@ -9,7 +9,7 @@ import com.example.myapplication.model.CustomerDetails;
 import com.example.myapplication.model.LoginRequestBody;
 import com.example.myapplication.model.ProductDetails;
 import com.example.myapplication.model.Signupbody;
-import com.example.myapplication.pojo.ProductsItem;
+import com.example.myapplication.pojo.*;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public interface APIInterface {
     @GET
     Call<BaseResponse<CartItem>> getCartItems();
 
-    @GET("/{string}")
-    Call<BaseResponse<ProductsItem>> getSearchList(@Path("{string}") String str);
+    @GET("/search/{string}")
+    Call<BaseResponse<List<SearchResponse>>> getSearchList(@Path("string") String str);
 
 }

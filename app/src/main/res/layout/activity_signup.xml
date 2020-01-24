@@ -68,30 +68,6 @@
 
 
 
-        <LinearLayout
-            android:gravity="center_horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="10dp">
-
-            <Button
-                android:id="@+id/buttonChoose"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select Picture to Upload"
-                android:layout_marginRight="40dp"/>
-
-
-            <Button
-                android:id="@+id/buttonUpload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Upload" />
-
-
-
-        </LinearLayout>
 
         <ImageView
 
@@ -101,9 +77,6 @@
             android:adjustViewBounds="true"
             app:layout_collapseMode="parallax"
             app:layout_collapseParallaxMultiplier="0.7" />
-
-
-
 
 
 
@@ -127,11 +100,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
-            android:background="@null"
+            android:background="#000000"
             android:text="@string/btn_link_to_login"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="15dp" />
+            android:textSize="15dp"
+            />
 
 
 
