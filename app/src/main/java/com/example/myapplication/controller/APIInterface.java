@@ -2,9 +2,10 @@ package com.example.myapplication.controller;
 
 import com.example.myapplication.pojo.BaseResponse;
 import com.example.myapplication.pojo.CartItem;
+import com.example.myapplication.pojo.CartResponse;
 import com.example.myapplication.pojo.Home;
 import com.example.myapplication.pojo.ProductDescription;
-import com.example.myapplication.model.Customer;
+import com.example.myapplication.pojo.Customer;
 import com.example.myapplication.model.CustomerDetails;
 import com.example.myapplication.model.LoginRequestBody;
 import com.example.myapplication.model.ProductDetails;
@@ -30,8 +31,8 @@ public interface APIInterface {
     @GET("/product/details")
     Call<List<ProductDetails>> getprod();
 
-    @GET("/user/dashboard/{id}")
-    Call<List<Customer>> getCustomerdetails(@Path("id") String string);
+    @GET("/customer/details/{customerEmailId}")
+    Call<BaseResponse<Customer>> getCustomerdetails(@Path("customerEmailId") String string);
 
     @GET("/search/{text}")
     Call<List<ProductDetails>> getsearchlist(@Path("text") String string);
@@ -45,8 +46,8 @@ public interface APIInterface {
     @GET("/product/description/{id}")
     Call<BaseResponse<ProductDescription>> getProductDescription(@Path("id") String productId);
 
-    @GET
-    Call<BaseResponse<CartItem>> getCartItems();
+    @GET("/cart/get/{customerEmailId}")
+    Call<BaseResponse<CartResponse>> getCartItems(@Path("customerEmailId") String string);
 
     @GET("/{string}")
     Call<BaseResponse<ProductsItem>> getSearchList(@Path("{string}") String str);

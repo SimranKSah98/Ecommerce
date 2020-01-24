@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.App;
 import com.example.myapplication.R;
+import com.example.myapplication.pojo.AddToCartResponseBody;
 import com.example.myapplication.pojo.BaseResponse;
 import com.example.myapplication.pojo.ProductDescription;
 import com.example.myapplication.controller.APIInterface;
@@ -32,6 +33,7 @@ import retrofit2.Retrofit;
 //import com.example.myapplication.activity.adapter.MerchantAdapter;
 
 public class ProductDescriptionActivity extends AppCompatActivity {
+   //private  Button addToCart;
 
    private Retrofit retrofit;
     private Call<BaseResponse<ProductDescription>> call;
@@ -49,6 +51,7 @@ public class ProductDescriptionActivity extends AppCompatActivity {
 
  //   private MerchantAdapter merchantAdapter;
     private ProductDescription productDescription;
+    private AddToCartResponseBody addToCartResponseBody;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,8 +59,8 @@ public class ProductDescriptionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_description);
 
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
-        addToCart=new Button(this);
-        addToCart.setOnClickListener(new CartButtonClick());
+       // addToCart=new Button(this);
+      //  addToCart.setOnClickListener(new CartButtonClick());
 
         initView();
 
@@ -165,7 +168,15 @@ public class ProductDescriptionActivity extends AppCompatActivity {
     }
 
 
+   public void initAddToCart()
+   {
+       addToCart=findViewById(R.id.addToCart);
+      // addToCart.setOnClickListener();
+       SharedPreferences sharedPreferences=getSharedPreferences("com.example.myapplication.activity",MODE_PRIVATE);
+       SharedPreferences.Editor editor=sharedPreferences.edit();
+      // addToCartResponseBody.se   resume here naveen
 
+   }
 
 
 }
