@@ -21,7 +21,6 @@ import java.util.List;
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.ViewHolder> {
 
     List<OrderHistory> orderHistoryList;
-    OrderHistoryAdapter.OnCardListener onCardListener;
 
     public OrderHistoryAdapter(List<OrderHistory> orderHistoryList) {
         this.orderHistoryList = orderHistoryList;
@@ -30,9 +29,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     @NonNull
     @Override
     public OrderHistoryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new OrderHistoryAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order_recycleview, parent, false), onCardListener);
-
-
+        return new OrderHistoryAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order_recycleview, parent, false));
     }
 
     @Override
@@ -42,40 +39,26 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         holder.productName.setText(orderHistoryList.get(holder.getAdapterPosition()).getProductName());
         holder.productPrice.setText(String.valueOf(orderHistoryList.get(holder.getAdapterPosition()).getProductPrice()));
         holder.orderdate.setText(orderHistoryList.get(holder.getAdapterPosition()).getOrderDate());
-
-
-
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return orderHistoryList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-    {
-        public TextView productName, productPrice,orderId,orderdate;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView productName, productPrice, orderId, orderdate;
         public ImageView imageView;
         public CardView cardView;
 
-        public ViewHolder(@NonNull View itemView, final OrderHistoryAdapter.OnCardListener onCardListener) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             productName = itemView.findViewById(R.id.text_view);
             productPrice = itemView.findViewById(R.id.home_product_price);
-            orderId=itemView.findViewById(R.id.orderid);
-            orderdate=itemView.findViewById(R.id.orderdate);
+            orderId = itemView.findViewById(R.id.orderid);
+            orderdate = itemView.findViewById(R.id.orderdate);
             imageView = itemView.findViewById(R.id.image_view);
             cardView = itemView.findViewById(R.id.home_popular_products);
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onCardListener.onCardClick(orderHistoryList.get(getAdapterPosition()).getProductId());
-                }
-            });
         }
-    }
-
-    public interface OnCardListener {
-        void onCardClick(String id);
     }
 }

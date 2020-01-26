@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     private LinearLayoutManager linearLayoutManager;
     private PopularProductsAdapter popularProductsAdapter;
     private Home home;
+    private ProgressBar progressBar;
 
 
     ListView listView;
@@ -69,8 +71,6 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
 
@@ -155,6 +155,8 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     public void initRetrofitAndCallApi() {
         retrofit = App.getApp().getRetrofit();
         APIInterface api = retrofit.create(APIInterface.class);
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         call = api.getProducts();
     }
 
@@ -164,6 +166,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
             @Override
             public void onResponse(Call<BaseResponse<Home>> call, Response<BaseResponse<Home>> response) {
                 if (response.isSuccessful()) {
+                    progressBar.setVisibility(View.INVISIBLE);
                     home = response.body().getData();
                     categoriesList.clear();
                     list.clear();
@@ -185,7 +188,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
 
     @Override
     public void onCardClick(String id) {
-     //   Toast.makeText(HomeActivity.this, id, Toast.LENGTH_LONG).show();
+        //   Toast.makeText(HomeActivity.this, id, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, ProductDescriptionActivity.class);
         intent.putExtra("productId", id);
         startActivity(intent);
@@ -203,13 +206,15 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     }
 
     @Override
-    public boolean onQueryTextSubmit(final String query)
-    {
+    public boolean onQueryTextSubmit(final String query) {
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         App.getApp().getRetrofit().create(APIInterface.class).getSearchList(query).enqueue(
                 new Callback<BaseResponse<List<SearchResponse>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<SearchResponse>>> call, Response<BaseResponse<List<SearchResponse>>> response) {
                         if (!response.body().getData().isEmpty()) {
+                            progressBar.setVisibility(View.INVISIBLE);
                             arraylist.clear();
                             arraylist.addAll(response.body().getData());
                             adapter = new ListViewAdapter(HomeActivity.this, arraylist);
@@ -225,6 +230,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                                 }
                             });
                         } else {
+                            progressBar.setVisibility(View.INVISIBLE);
                             arraylist.clear();
                             SearchResponse searchResponse = new SearchResponse();
                             searchResponse.setProductName("No Search result");
@@ -236,9 +242,8 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                     }
 
                     @Override
-                    public void onFailure
-                            (Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
-                        Log.e("Check", t.getMessage());
+                    public void onFailure(Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
+                        Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                     }
 
                 });

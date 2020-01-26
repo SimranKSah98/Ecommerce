@@ -13,6 +13,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
     private Call<BaseResponse<ProductDescription>> call;
     private Call<BaseResponse<AddToCartRequestBody>> callAddToCart;
     private List<ProductDescription> list = new ArrayList();
+    private ProgressBar progressBar;
 
 
     private ScaleGestureDetector scaleGestureDetector;
@@ -178,6 +180,8 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
     public void initRetrofitAndCallApi() {
         retrofit = App.getApp().getRetrofit();
         APIInterface api = retrofit.create(APIInterface.class);
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         call = api.getProductDescription(getIntent().getStringExtra("productId"));
     }
 
@@ -205,6 +209,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
             @Override
             public void onResponse(Call<BaseResponse<ProductDescription>> call, Response<BaseResponse<ProductDescription>> response) {
                 if (response.isSuccessful()) {
+                    progressBar.setVisibility(View.INVISIBLE);
                     productDescription = response.body().getData();
 
                     productName = findViewById(R.id.textView5);
@@ -236,7 +241,8 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
 
             @Override
             public void onFailure(Call<BaseResponse<ProductDescription>> call, Throwable t) {
-                Log.e("Check", t.getMessage());
+                Toast.makeText(ProductDescriptionActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -273,12 +279,13 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                     APIInterface api = retrofit.create(APIInterface.class);
                     //  System.out.println(customerId);
                     callAddToCart = api.updateCart(customerId, addToCartRequestBody);
-
-
+                    progressBar = findViewById(R.id.progress_bar);
+                    progressBar.setVisibility(View.VISIBLE);
                     callAddToCart.enqueue(new Callback<BaseResponse<AddToCartRequestBody>>() {
                         @Override
                         public void onResponse(Call<BaseResponse<AddToCartRequestBody>> call, Response<BaseResponse<AddToCartRequestBody>> response) {
                             if (response.isSuccessful()) {
+                                progressBar.setVisibility(View.INVISIBLE);
                                 Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(ProductDescriptionActivity.this, CartActivity.class);
                                 startActivity(intent);
@@ -287,7 +294,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
 
                         @Override
                         public void onFailure(Call<BaseResponse<AddToCartRequestBody>> call, Throwable t) {
-                            Log.e("addToCart", t.getMessage());
+                            Toast.makeText(ProductDescriptionActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                         }
 
 

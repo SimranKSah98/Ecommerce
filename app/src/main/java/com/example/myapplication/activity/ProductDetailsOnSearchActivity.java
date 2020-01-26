@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,7 @@ public class ProductDetailsOnSearchActivity extends AppCompatActivity implements
     List<SearchResponse> arraylist = new ArrayList<SearchResponse>();
     Retrofit retrofit;
     Toolbar toolbar;
+    private ProgressBar progressBar;
 
     private RecyclerView recyclerView;
     private SearchPopularAdapter searchPopularAdapter;
@@ -115,10 +117,13 @@ public class ProductDetailsOnSearchActivity extends AppCompatActivity implements
     }
 
     public void initRetrofitAndCallApi() {
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         App.getApp().getRetrofit().create(APIInterface.class).getSearchList(getIntent().getStringExtra("QueryText")).enqueue(
                 new Callback<BaseResponse<List<SearchResponse>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<SearchResponse>>> call, Response<BaseResponse<List<SearchResponse>>> response) {
+                        progressBar.setVisibility(View.INVISIBLE);
                         arraylist.clear();
                         arraylist.addAll(response.body().getData());
                         searchPopularAdapter.notifyDataSetChanged();
@@ -126,7 +131,7 @@ public class ProductDetailsOnSearchActivity extends AppCompatActivity implements
 
                     @Override
                     public void onFailure(Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
-                        Log.e("Check",t.getMessage());
+                        Toast.makeText(ProductDetailsOnSearchActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
         );

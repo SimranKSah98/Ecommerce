@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -38,11 +40,28 @@ public class OrderHistoryActivity extends AppCompatActivity {
     OrderHistoryAdapter orderHistoryAdapter;
     private Toolbar toolbar;
     private RecyclerView recyclerView;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orderhistory);
+        initToolbar();
+        initRecyclerView();
+        initRetrofit();
+        initBottomNavigation();
+    }
+
+    private void initRecyclerView() {
+        recyclerView = findViewById(R.id.orderhistory);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(OrderHistoryActivity.this, 2);
+        recyclerView.setLayoutManager(layoutManager);
+        orderHistoryAdapter = new OrderHistoryAdapter(orderHistoryList);
+        recyclerView.setAdapter(orderHistoryAdapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    private void initToolbar() {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Order History");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
@@ -53,17 +72,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        recyclerView = findViewById(R.id.orderhistory);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(OrderHistoryActivity.this, 2);
-        recyclerView.setLayoutManager(layoutManager);
-        orderHistoryAdapter = new OrderHistoryAdapter(orderHistoryList);
-        recyclerView.setAdapter(orderHistoryAdapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        initRetrofit();
-        initBottomNavigation();
     }
-
-
 
     private void initBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -74,7 +83,6 @@ public class OrderHistoryActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.dashboard:
                         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-
                         Boolean value = sharedPreferences.getBoolean("login_details", false);
                         if (!value) {
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -86,13 +94,14 @@ public class OrderHistoryActivity extends AppCompatActivity {
                             return true;
                         }
                     case R.id.home:
+                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                        overridePendingTransition(0, 0);
                         return true;
 
                     case R.id.cart:
                         startActivity(new Intent(getApplicationContext(), CartActivity.class));
                         overridePendingTransition(0, 0);
                         return true;
-
 
                     case R.id.category:
                         startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
@@ -104,12 +113,14 @@ public class OrderHistoryActivity extends AppCompatActivity {
         });
     }
 
-
     private void initRetrofit() {
-        App.getApp().getRetrofit().create(APIInterface.class).getorderhistory(0, getIntent().getStringExtra("customeremailid")).enqueue(
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+        App.getApp().getRetrofit().create(APIInterface.class).getorderhistory(1, getIntent().getStringExtra("customeremailid")).enqueue(
                 new Callback<BaseResponse<List<OrderHistory>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<OrderHistory>>> call, Response<BaseResponse<List<OrderHistory>>> response) {
+                        progressBar.setVisibility(View.INVISIBLE);
                         orderHistoryList.clear();
                         orderHistoryList.addAll(response.body().getData());
                         orderHistoryAdapter.notifyDataSetChanged();
@@ -117,7 +128,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<BaseResponse<List<OrderHistory>>> call, Throwable t) {
-                        Log.d("FAil", t.getMessage());
+                        Toast.makeText(OrderHistoryActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
 
                     }
                 }

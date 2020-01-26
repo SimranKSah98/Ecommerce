@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +37,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
     private RecyclerView recyclerView;
     private CategoryAdapter categoryAdaptor;
     private Toolbar toolbar;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,8 +98,6 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
                         return true;
 
                     case R.id.category:
-                        startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
-                        overridePendingTransition(0, 0);
                         return true;
                 }
                 return false;
@@ -105,10 +106,14 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
     }
 
     public void callHomeApi() {
+
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         App.getApp().getRetrofit().create(APIInterface.class).getProducts().enqueue(
                 new Callback<BaseResponse<Home>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<Home>> call, Response<BaseResponse<Home>> response) {
+                        progressBar.setVisibility(View.INVISIBLE);
                         categoryList.clear();
                         categoryList.addAll(response.body().getData().getCategories());
                         categoryAdaptor.notifyDataSetChanged();
@@ -116,6 +121,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
 
                     @Override
                     public void onFailure(Call<BaseResponse<Home>> call, Throwable t) {
+                        Toast.makeText(CategoryActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
 
                     }
                 });

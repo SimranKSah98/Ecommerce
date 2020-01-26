@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
     private RecyclerView recyclerView;
     private CategoryProductAdapter categoryAdaptor;
     private Toolbar toolbar;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,10 +109,13 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
 
 
     private void onCategoryClick() {
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         App.getApp().getRetrofit().create(APIInterface.class).getRespectiveCategoryProducts(getIntent().getStringExtra("categoryId")).enqueue(
                 new Callback<BaseResponse<CategoriesItem>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<CategoriesItem>> call, Response<BaseResponse<CategoriesItem>> response) {
+                        progressBar.setVisibility(View.INVISIBLE);
                         productsItemList.clear();
                         productsItemList.addAll(response.body().getData().getProducts());
                         categoryAdaptor.notifyDataSetChanged();

@@ -2,8 +2,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/categoryLayout"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="170dp"
+    android:layout_height="180dp"
     android:orientation="vertical"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/categoryLayoutImageView"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:layout_gravity="center"
             android:padding="8dp" />
 

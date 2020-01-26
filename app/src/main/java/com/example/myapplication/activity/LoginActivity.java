@@ -9,12 +9,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.myapplication.App;
 import com.example.myapplication.R;
 import com.example.myapplication.controller.APIInterface;
@@ -44,36 +46,29 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
     private CustomerDetails customerDetails;
     private Toolbar toolbar;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
             finish();
         }
-        setContentView(R.layout.activity_login);
         initView();
         initClickListerner();
         initBottomNavigation();
-//
-//        SharedPreferences sharedPreferences = getSharedPreferences("login_details", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putBoolean("login_details", true);
-//        editor.commit();
-
-
-
     }
 
     private void initView() {
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         btnSignup = (Button) findViewById(R.id.btn_signup);
-        btnLogin= (Button) findViewById(R.id.btn_login);
-        signInButton =(SignInButton) findViewById(R.id.googlesign1);
-        btnfb=(Button) findViewById(R.id.login_button);
+        btnLogin = (Button) findViewById(R.id.btn_login);
+        signInButton = (SignInButton) findViewById(R.id.googlesign1);
+        btnfb = (Button) findViewById(R.id.login_button);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.login);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
@@ -86,9 +81,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-
-    private void initBottomNavigation()
-    {
+    private void initBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -111,8 +104,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
                     case R.id.category:
-                        startActivity(new Intent(getApplicationContext(),CategoryActivity.class));
-                        overridePendingTransition(0,0);
+                        startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
+                        overridePendingTransition(0, 0);
                         return true;
                 }
                 return false;
@@ -159,8 +152,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-
-    //GOOGLE
     private void signIn() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -168,15 +159,6 @@ public class LoginActivity extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = googleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedtask) {
@@ -194,8 +176,9 @@ public class LoginActivity extends AppCompatActivity {
         sendtoken(requestBody);
     }
 
-
     private void sendtoken(final LoginRequestBody requestBody) {
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         App.getApp().getRetrofit().create(APIInterface.class).getCus(requestBody).enqueue(
                 new Callback<CustomerDetails>() {
                     @Override
@@ -208,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
                             //  editor.putString("customerId",requestBody.)
                             editor.putString("customerEmailId", requestBody.getCustomerEmail());
                             editor.putBoolean("login_details", true);
-                          //  editor.putString("customerId", customerDetails.getCustomerId());
+                            //  editor.putString("customerId", customerDetails.getCustomerId());
                             editor.commit();
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             startActivity(intent);
@@ -217,26 +200,18 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<CustomerDetails> call, Throwable t) {
-                        Toast.makeText(LoginActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
         );
     }
 
-//    public void signout()
-//    {
-//        auth.signOut();
-//
-//        FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user == null) {
-//                    // user auth state is changed - user is null
-//                    // launch login activity
-//                    finish();
-//                }
-//            }
-//        };
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
 }
