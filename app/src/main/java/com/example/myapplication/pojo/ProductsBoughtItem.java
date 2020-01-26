@@ -2,7 +2,7 @@ package com.example.myapplication.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ProductsBoughtItem{
+    public class ProductsBoughtItem{
 
 	@SerializedName("image")
 	private String image;

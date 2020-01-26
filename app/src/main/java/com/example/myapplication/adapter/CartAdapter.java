@@ -37,15 +37,16 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final CartAdapter.ViewHolder holder, int position) {
 
 
-        final ProductsBoughtItem productsItem=cartList.get(position);
-        Glide.with(holder.imageView.getContext()).applyDefaultRequestOptions( new RequestOptions().placeholder(R.drawable.ic_launcher_background)).load(productsItem.getImage()).into(holder.imageView);
+        final ProductsBoughtItem productsItem = cartList.get(position);
+        Glide.with(holder.imageView.getContext()).applyDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.ic_launcher_background)).load(productsItem.getImage()).into(holder.imageView);
         holder.name.setText(productsItem.getName());
-        String price=String.valueOf(productsItem.getPrice());
+        String price = String.valueOf(productsItem.getPrice());
         holder.price.setText(price);
         holder.quantity.setNumber(String.valueOf(productsItem.getQuantity()));
 
-
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -65,6 +66,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             name=itemView.findViewById(R.id.cart_product_name);
             price=itemView.findViewById(R.id.cart_product_price);
             quantity=itemView.findViewById(R.id.cart_product_quantity);
+            quantity.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
+                @Override
+                public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
+
+                }
+            });
         }
     }
 }
