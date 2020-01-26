@@ -68,7 +68,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
     private MerchantAdapter merchantAdapter;
     private ProductDescription productDescription;
     private ProductsItem productsItem;
-    private AddToCartRequestBody addToCartRequestBody;
+    private AddToCartRequestBody addToCartRequestBody = new AddToCartRequestBody();
     private String merchantId, name;
     private List<AddToCartRequestBody> guestCartList = new ArrayList();
 
@@ -215,7 +215,6 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 final boolean value = sharedPreferences.getBoolean("login_details", false);
                 if (value) {
-                    addToCartRequestBody = new AddToCartRequestBody();
                     addToCartRequestBody.setImage(productDescription.getImage());
                     addToCartRequestBody.setMerchantName(productDescription.getMerchantName());
                     addToCartRequestBody.setName(name);
@@ -281,6 +280,10 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                     addToCartRequestBody.setMerchantId(merchantId);
                     guestCartList.add(addToCartRequestBody);
                     setList("guestCart", guestCartList);
+                    Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(ProductDescriptionActivity.this, CartActivity.class);
+                    startActivity(intent);
+                    return;
                 }
             }
         });

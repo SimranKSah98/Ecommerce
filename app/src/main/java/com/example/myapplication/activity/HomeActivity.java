@@ -49,6 +49,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     private Call<BaseResponse<Home>> call;
     private List<ProductsItem> list = new ArrayList();
     private List<CategoriesItem> categoriesList = new ArrayList();
+    //private Call<BaseResponse<Integer>> callCartCount;
     private TextView textView;
     private ImageView imageView;
     private RecyclerView recyclerView;
@@ -58,7 +59,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     private PopularProductsAdapter popularProductsAdapter;
     private Home home;
     private ProgressBar progressBar;
-    private int cartCount;
+    //private int cartCount;
     ListView listView;
     ListViewAdapter adapter;
     SearchView searchView;
@@ -127,16 +128,16 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                         sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
                         boolean value1 = sharedPreferences.getBoolean("login_details", false);
                         if (value1) {
-                            if (cartCount > 0) {
-                                startActivity(new Intent(getApplicationContext(), CartActivity.class));
-                                overridePendingTransition(0, 0);
-                                return true;
-                            } else if (cartCount == 0) {
+                            //if (cartCount > 0) {
+                            startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                            overridePendingTransition(0, 0);
+                            return true;
+                            /*} else if (cartCount == 0) {
                                 Toast.makeText(HomeActivity.this, "No products in cart", Toast.LENGTH_LONG).show();
                                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                                 overridePendingTransition(0, 0);
                                 return true;
-                            }
+                            }*/
 
 
                         } else if (value1 == false) {
@@ -169,6 +170,8 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         call = api.getProducts();
+        //SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+        //callCartCount=api.getCartCount()
     }
 
     private void apiCallback() {
@@ -180,7 +183,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                     home = response.body().getData();
                     categoriesList.clear();
                     list.clear();
-                    cartCount = home.getCartCount();
+                    //  cartCount = home.getCartCount();
                     categoriesList.addAll(home.getCategories());
                     for (int i = 0; i < home.getCategories().size(); i++) {
                         list.addAll(home.getCategories().get(i).getProducts());
