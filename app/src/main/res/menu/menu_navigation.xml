@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
     <item
         android:id="@+id/dashboard"
-        android:title="DASHBOARD"
-        android:icon="@drawable/ic_dashboard" />
+        android:icon="@drawable/ic_dashboard"
+        android:title="DASHBOARD" />
 
     <item
         android:id="@+id/home"
-        android:title="HOME"
-        android:icon="@drawable/ic_home"/>
+        android:icon="@drawable/ic_home"
+        android:title="HOME" />
+
+    <item
+        android:id="@+id/category"
+        android:icon="@drawable/ic_playlist_add_white_24dp"
+        android:title="CATEGORY" />
     <item
         android:id="@+id/cart"
-        android:title="CART"
         android:icon="@drawable/ic_add_shopping_cart"
-        />
+        android:title="CART" />
 
 </menu>

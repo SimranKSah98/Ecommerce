@@ -1,58 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:facebook="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.LoginActivity"
-    android:orientation="vertical">
+    android:background="@color/grey_100"
+    android:orientation="vertical"
+    tools:context=".activity.LoginActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark" />
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="16dp">
 
-
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="30dp"
             android:src="@drawable/logo"
-            />
+            android:scaleType="fitXY" />
 
         <EditText
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/white"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
             android:maxLines="1"
+            android:padding="4dp"
             android:singleLine="true"
-            android:textColor="#FFFFFF"
-            android:layout_margin="10dp"
-            android:background="#F5F5F5"
-            android:textSize="24dp"
-            android:padding="4dp"/>
+            android:textSize="24dp" />
 
         <EditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusableInTouchMode="true"
+            android:layout_margin="10dp"
+            android:background="@color/white"
             android:hint="@string/hint_password"
             android:imeOptions="actionUnspecified"
             android:inputType="textPassword"
             android:maxLines="1"
+            android:padding="4dp"
             android:singleLine="true"
-            android:textColor="@android:color/white"
-            android:layout_margin="10dp"
-            android:background="#F5F5F5"
-            android:textSize="24dp"
-            android:padding="4dp"/>
+            android:textSize="24dp" />
 
 
         <Button
@@ -60,11 +64,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="#000000"
+            android:background="@color/colorAccent"
             android:text="@string/btn_login"
-            android:textSize="20dp"
             android:textColor="#FFFFFF"
-            />
+            android:textSize="20dp" />
 
 
         <!-- Link to Login Screen -->
@@ -74,32 +77,45 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="#000000"
+            android:background="@color/colorAccent"
             android:text="@string/btn_link_to_register"
             android:textAllCaps="false"
-            android:textSize="20dp"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF"
+            android:textSize="20dp" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/googlesign1"
             android:layout_width="200dp"
             android:layout_height="40dp"
-            android:layout_marginTop="20dp"></com.google.android.gms.common.SignInButton>
+            android:layout_marginTop="20dp"/>
 
         <com.facebook.login.widget.LoginButton
-            android:layout_marginTop="10dp"
             android:id="@+id/login_button"
             android:layout_width="200dp"
-            android:layout_height="45dp" />
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp" />
         <!--        <Button-->
-<!--            android:id="@+id/googlesign1"-->
-<!--            android:layout_width="fill_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="20dip"-->
-<!--            android:background="@null"-->
-<!--            android:text="GoogleLogin"-->
-<!--            android:textAllCaps="false"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:textSize="15dp" />-->
+        <!--            android:id="@+id/googlesign1"-->
+        <!--            android:layout_width="fill_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="20dip"-->
+        <!--            android:background="@null"-->
+        <!--            android:text="GoogleLogin"-->
+        <!--            android:textAllCaps="false"-->
+        <!--            android:textColor="@color/white"-->
+        <!--            android:textSize="15dp" />-->
+
+
     </LinearLayout>
-</LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/menu_navigation" />
+</RelativeLayout>

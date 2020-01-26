@@ -44,8 +44,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.price.setText(price);
         holder.quantity.setNumber(String.valueOf(productsItem.getQuantity()));
 
-
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -65,6 +66,23 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             name=itemView.findViewById(R.id.cart_product_name);
             price=itemView.findViewById(R.id.cart_product_price);
             quantity=itemView.findViewById(R.id.cart_product_quantity);
+            quantity.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
+                @Override
+                public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
+                    if(newValue==0)
+                    {
+
+                    }
+                    else if((oldValue-newValue)>0)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+                }
+            });
         }
     }
 }

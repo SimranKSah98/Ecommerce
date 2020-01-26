@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">E-Commerce</string>
+    <string name="app_name">FUNEEstore</string>
 
 
     <string name="action_sign_in_short">Register</string>
@@ -38,7 +38,13 @@
     <string name="google_status_fmt">Google User: %s</string>
     <string name="google_title_text">Google Sign In</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
-
+    <string name="login">Login</string>
+    <string name="cart">Cart</string>
+    <string name="pdp">Product Description</string>
+    <string name="search">Search Results</string>
+    <string name="signup">Signup</string>
+    <string name="dashboad">Dashboard</string>
+    <string name="category">Category</string>
 
 
 

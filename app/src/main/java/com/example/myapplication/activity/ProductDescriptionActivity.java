@@ -1,12 +1,17 @@
 package com.example.myapplication.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,9 +26,11 @@ import com.example.myapplication.controller.APIInterface;
 import com.example.myapplication.pojo.AddToCartResponseBody;
 import com.example.myapplication.pojo.BaseResponse;
 import com.example.myapplication.pojo.ProductDescription;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,9 +40,9 @@ import retrofit2.Retrofit;
 //import com.example.myapplication.activity.adapter.MerchantAdapter;
 
 public class ProductDescriptionActivity extends AppCompatActivity {
-   //private  Button addToCart;
+    //private  Button addToCart;
 
-   private Retrofit retrofit;
+    private Retrofit retrofit;
     private Call<BaseResponse<ProductDescription>> call;
     private List<ProductDescription> list = new ArrayList();
 
@@ -45,11 +52,13 @@ public class ProductDescriptionActivity extends AppCompatActivity {
     private TextView productName, productPrice, merchantName, attributes, usp, description;
     private ImageView productImage;
     private Button addToCart;
+    private Toolbar toolbar;
 
     private RecyclerView merchantrecyclerView;
     private RecyclerView commentView;
 
- //   private MerchantAdapter merchantAdapter;
+
+    //   private MerchantAdapter merchantAdapter;
     private ProductDescription productDescription;
     private AddToCartResponseBody addToCartResponseBody;
 
@@ -59,24 +68,66 @@ public class ProductDescriptionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_description);
 
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
-       // addToCart=new Button(this);
-      //  addToCart.setOnClickListener(new CartButtonClick());
+        // addToCart=new Button(this);
+        //  addToCart.setOnClickListener(new CartButtonClick());
 
         initView();
+        initBottomNavigation();
 
     }
 
 
-    private void CartButtonClicked()
-    {
+    private void CartButtonClicked() {
 
-        SharedPreferences sharedPreferences=getSharedPreferences("user_details",MODE_PRIVATE);
-        Boolean value=sharedPreferences.getBoolean("login",false);
+        SharedPreferences sharedPreferences = getSharedPreferences("user_details", MODE_PRIVATE);
+        Boolean value = sharedPreferences.getBoolean("login", false);
 
         // resume from here
 
     }
 
+    private void initBottomNavigation()
+    {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.dashboard);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.dashboard:
+                        SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+
+                        Boolean value = sharedPreferences.getBoolean("login_details", false);
+                        if (!value) {
+                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                            overridePendingTransition(0, 0);
+                            return true;
+                        } else if (value) {
+                            startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+                            overridePendingTransition(0, 0);
+                            return true;
+                        }
+
+                    case R.id.home:
+                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.cart:
+                        startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.category:
+                        startActivity(new Intent(getApplicationContext(),CategoryActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
@@ -97,7 +148,6 @@ public class ProductDescriptionActivity extends AppCompatActivity {
     }
 
 
-
     public void initRetrofitAndCallApi() {
         retrofit = App.getApp().getRetrofit();
         APIInterface api = retrofit.create(APIInterface.class);
@@ -106,12 +156,18 @@ public class ProductDescriptionActivity extends AppCompatActivity {
 
 
     public void initView() {
-       initRetrofitAndCallApi();
-       apiCallback();
-
-     //   merchantrecyclerView = findViewById(R.id.recycler_view);
-    //    merchantrecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-      //  merchantrecyclerView.setAdapter(merchantAdapter);
+        initRetrofitAndCallApi();
+        apiCallback();
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.pdp);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     private void apiCallback() {
@@ -121,28 +177,31 @@ public class ProductDescriptionActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     productDescription = response.body().getData();
 
-                    productName=findViewById(R.id.textView5);
+                    productName = findViewById(R.id.textView5);
                     productName.setText(productDescription.getName());
 
 
-
-                    productPrice=(TextView)findViewById(R.id.textView6);
+                    productPrice = (TextView) findViewById(R.id.textView6);
                     productPrice.setText(String.valueOf(productDescription.getPrice()));
 
-                    merchantName =(TextView)findViewById(R.id.textView7);
+                    merchantName = (TextView) findViewById(R.id.textView7);
                     merchantName.setText(productDescription.getMerchantName());
 
-                    attributes =(TextView)findViewById(R.id.textView8);
+//                    Map<String,String> myMap= productDescription.getAttributes();
+//                    ArrayList<String> keyList= (ArrayList<String>) myMap.keySet();
+//                    keyList = new ArrayList<String>(keyList);
+
+                    attributes = (TextView) findViewById(R.id.textView8);
                     attributes.setText(String.valueOf(productDescription.getAttributes()));
 
-                    usp =(TextView)findViewById(R.id.textView9);
+                    usp = (TextView) findViewById(R.id.textView9);
                     usp.setText(productDescription.getUsp());
 
-                    description =(TextView)findViewById(R.id.textView10);
+                    description = (TextView) findViewById(R.id.textView10);
                     description.setText(productDescription.getDescription());
 
-                    productImage=(ImageView)findViewById(R.id.imageView2);
-                      Glide.with(productImage.getContext()).load(productDescription.getImage()).into(productImage);
+                    productImage = (ImageView) findViewById(R.id.imageView2);
+                    Glide.with(productImage.getContext()).load(productDescription.getImage()).into(productImage);
 
 
                 }
@@ -157,9 +216,7 @@ public class ProductDescriptionActivity extends AppCompatActivity {
     }
 
 
-
-    class CartButtonClick implements View.OnClickListener
-    {
+    class CartButtonClick implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
@@ -168,15 +225,13 @@ public class ProductDescriptionActivity extends AppCompatActivity {
     }
 
 
-   public void initAddToCart()
-   {
-       addToCart=findViewById(R.id.addToCart);
-      // addToCart.setOnClickListener();
-       SharedPreferences sharedPreferences=getSharedPreferences("com.example.myapplication.activity",MODE_PRIVATE);
-       SharedPreferences.Editor editor=sharedPreferences.edit();
-      // addToCartResponseBody.se   resume here naveen
+    public void initAddToCart() {
+        addToCart = findViewById(R.id.addToCart);
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        // addToCartResponseBody.se   resume here naveen
 
-   }
+    }
 
 
 }
