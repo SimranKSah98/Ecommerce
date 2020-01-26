@@ -63,5 +63,7 @@ public interface APIInterface {
     @GET("home/{categoryId}")
     Call<BaseResponse<CategoriesItem>> getRespectiveCategoryProducts(@Path("categoryId") String categoryId);
 
+    @GET("/cart/getCartCount/{customerEmailId}")
+    Call<BaseResponse<Integer>> getCartCount(@Path("customerEmailId") String string );
 
 }
