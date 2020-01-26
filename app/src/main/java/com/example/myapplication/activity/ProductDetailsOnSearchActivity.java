@@ -128,7 +128,7 @@ public class ProductDetailsOnSearchActivity extends AppCompatActivity implements
 
                     @Override
                     public void onFailure(Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
-                        Toast.makeText(ProductDetailsOnSearchActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(ProductDetailsOnSearchActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
                     }
                 }

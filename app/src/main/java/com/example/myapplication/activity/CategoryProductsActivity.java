@@ -123,7 +123,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
 
                     @Override
                     public void onFailure(Call<BaseResponse<CategoriesItem>> call, Throwable t) {
-                        Toast.makeText(CategoryProductsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(CategoryProductsActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
                     }
                 }

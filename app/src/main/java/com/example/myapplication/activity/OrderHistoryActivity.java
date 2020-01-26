@@ -128,7 +128,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<BaseResponse<List<OrderHistory>>> call, Throwable t) {
-                        Toast.makeText(OrderHistoryActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(OrderHistoryActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
                     }
                 }

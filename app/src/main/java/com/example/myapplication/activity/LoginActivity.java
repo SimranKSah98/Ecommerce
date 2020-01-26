@@ -22,6 +22,9 @@ import com.example.myapplication.R;
 import com.example.myapplication.controller.APIInterface;
 import com.example.myapplication.model.CustomerDetails;
 import com.example.myapplication.model.LoginRequestBody;
+import com.example.myapplication.pojo.AddToCartRequestBody;
+import com.example.myapplication.pojo.BaseResponse;
+import com.example.myapplication.pojo.CartResponse;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -31,6 +34,12 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,11 +56,13 @@ public class LoginActivity extends AppCompatActivity {
     private CustomerDetails customerDetails;
     private Toolbar toolbar;
     private ProgressBar progressBar;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
@@ -186,15 +197,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             customerDetails = response.body();
                             progressBar.setVisibility(View.INVISIBLE);
-                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.clear();
-                            //  editor.putString("customerId",requestBody.)
-                            editor.putString("customerEmailId", requestBody.getCustomerEmail());
-                            editor.putBoolean("login_details", true);
-                            editor.commit();
-                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                            startActivity(intent);
+                            sendCartItem(requestBody.getCustomerEmail());
                         }
                     }
 
@@ -205,6 +208,40 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    void sendCartItem(final String emailId) {
+        String cartItem = sharedPreferences.getString("guestCart", "");
+        Gson gson = new Gson();
+        Type listType = new TypeToken<ArrayList<AddToCartRequestBody>>() {
+        }.getType();
+        List<AddToCartRequestBody> addToCartRequestBodies = gson.fromJson(cartItem, listType);
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+        App.getApp().getRetrofit().create(APIInterface.class).sendCartItemOnLogin(emailId, addToCartRequestBodies).enqueue(
+                new Callback<BaseResponse<CartResponse>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<CartResponse>> call, Response<BaseResponse<CartResponse>> response) {
+                        if (response.isSuccessful()) {
+                            progressBar.setVisibility(View.INVISIBLE);
+                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.clear();
+                            editor.putString("customerEmailId", emailId);
+                            editor.putBoolean("login_details", true);
+                            editor.commit();
+                            Toast.makeText(LoginActivity.this, "Successfully Logged in", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<CartResponse>> call, Throwable t) {
+                        Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+                });
     }
 
     @Override

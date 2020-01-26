@@ -122,7 +122,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<BaseResponse<Customer>> call, Throwable t) {
-                Toast.makeText(DashBoardActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(DashBoardActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
@@ -138,6 +138,7 @@ public class DashBoardActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.clear();
                 editor.commit();
+                Toast.makeText(DashBoardActivity.this, "Successfully Logged out", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(DashBoardActivity.this, HomeActivity.class);
                 startActivity(intent);
             }

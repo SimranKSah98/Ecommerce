@@ -198,7 +198,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
 
             @Override
             public void onFailure(Call<BaseResponse<ProductDescription>> call, Throwable t) {
-                Toast.makeText(ProductDescriptionActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(ProductDescriptionActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
@@ -235,7 +235,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                         public void onResponse(Call<BaseResponse<CartResponse>> call, Response<BaseResponse<CartResponse>> response) {
                             if (response.isSuccessful()) {
                                 progressBar.setVisibility(View.INVISIBLE);
-                                Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(ProductDescriptionActivity.this, CartActivity.class);
                                 startActivity(intent);
                             }
@@ -243,7 +243,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
 
                         @Override
                         public void onFailure(Call<BaseResponse<CartResponse>> call, Throwable t) {
-                            Toast.makeText(ProductDescriptionActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(ProductDescriptionActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(ProductDescriptionActivity.this, HomeActivity.class);
                             startActivity(intent);
                         }
@@ -264,7 +264,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                                 addToCartRequestBody.setQuantity(addToCartRequestBody.getQuantity() + 1);
                                 guestCartList.add(addToCartRequestBody);
                                 setList("guestCart", guestCartList);
-                                Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(ProductDescriptionActivity.this, CartActivity.class);
                                 startActivity(intent);
                                 return;
@@ -280,7 +280,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                     addToCartRequestBody.setMerchantId(merchantId);
                     guestCartList.add(addToCartRequestBody);
                     setList("guestCart", guestCartList);
-                    Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(ProductDescriptionActivity.this, CartActivity.class);
                     startActivity(intent);
                     return;
