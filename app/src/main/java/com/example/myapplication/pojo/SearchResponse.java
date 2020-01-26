@@ -15,6 +15,9 @@ public class SearchResponse {
     @SerializedName("productDescription")
     private String productDescription;
 
+    @SerializedName("productImage")
+    private String productImage;
+
     @SerializedName("usp")
     private String usp;
 
@@ -52,6 +55,14 @@ public class SearchResponse {
 
     public void setProductPrice(Double productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public String getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
     }
 
     public String getProductDescription() {

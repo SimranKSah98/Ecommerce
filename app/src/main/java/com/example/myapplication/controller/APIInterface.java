@@ -23,38 +23,45 @@ import retrofit2.http.Path;
 
 public interface APIInterface {
 
-    @POST("/customer/signin")
+    @POST("customer/signin")
     Call<CustomerDetails> getCus(@Body LoginRequestBody requestBody);
 
-    @POST("/customer/signup")
+    @POST("customer/signup")
     Call<CustomerDetails> signup(@Body Signupbody signupBody);
 
-    @GET("/product/details")
+    @GET("product/details")
     Call<List<ProductDetails>> getprod();
 
-    @GET("/customer/details/{customerEmailId}")
+    @GET("customer/details/{customerEmailId}")
     Call<BaseResponse<Customer>> getCustomerdetails(@Path("customerEmailId") String string);
 
-    @GET("/search/{text}")
+    @GET("search/{text}")
     Call<List<ProductDetails>> getsearchlist(@Path("text") String string);
 
-    @GET("/home")
+    @GET("home")
     Call<BaseResponse<Home>> getProducts();
 
-    @GET("/category/product/{categoryid}")
+    @GET("category/product/{categoryid}")
     Call<BaseResponse<Home>> getCategoryProducts(@Path("categoryid") String categoryId);
 
-    @GET("/product/description/{id}")
+    @GET("product/description/{id}")
     Call<BaseResponse<ProductDescription>> getProductDescription(@Path("id") String productId);
 
-    @GET("/cart/get/{customerEmailId}")
+    @GET("cart/get/{customerEmailId}")
     Call<BaseResponse<CartResponse>> getCartItems(@Path("customerEmailId") String string);
 
-    @GET("/search/{string}")
+    @GET("search/{string}")
     Call<BaseResponse<List<SearchResponse>>> getSearchList(@Path("string") String str);
 
     @POST("/cart/add/{customerId}")
     Call<BaseResponse<AddToCartRequestBody>> updateCart(@Path("customerId") String string, @Body AddToCartRequestBody addToCartRequestBody);
+
+
+    @POST("customer/order-history/{span}/{customerEmailId}")
+    Call<BaseResponse<List<OrderHistory>>> getorderhistory(@Path("span") int span, @Path("customerEmailId") String userId);
+
+    @GET("home/{categoryId}")
+    Call<BaseResponse<CategoriesItem>> getRespectiveCategoryProducts(@Path("categoryId") String categoryId);
 
 
 }

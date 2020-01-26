@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,6 +54,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     private RecyclerView recyclerView;
     private RecyclerView categoryRecyclerView;
     private CategoryItemAdapter categoryItemAdapter;
+    private LinearLayoutManager linearLayoutManager;
     private PopularProductsAdapter popularProductsAdapter;
     private Home home;
 
@@ -67,6 +69,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
 
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
@@ -89,11 +92,17 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
 
     private void initRecyclerView() {
         categoryRecyclerView = findViewById(R.id.recycler_view_categories);
+
         categoryItemAdapter = new CategoryItemAdapter(categoriesList, this);
-        categoryRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        categoryRecyclerView.setLayoutManager(linearLayoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(HomeActivity.this, linearLayoutManager.getOrientation());
+        categoryRecyclerView.addItemDecoration(dividerItemDecoration);
         categoryRecyclerView.setAdapter(categoryItemAdapter);
+
         popularProductsAdapter = new PopularProductsAdapter(list, this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(HomeActivity.this, 2);
+
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -131,6 +140,12 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                         startActivity(new Intent(getApplicationContext(), CartActivity.class));
                         overridePendingTransition(0, 0);
                         return true;
+
+
+                    case R.id.category:
+                        startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
                 }
                 return false;
             }
@@ -166,11 +181,6 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                 Log.e("Check", t.getMessage());
             }
         });
-
-
-
-
-
     }
 
     @Override
@@ -193,32 +203,45 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(final String query)
+    {
         App.getApp().getRetrofit().create(APIInterface.class).getSearchList(query).enqueue(
                 new Callback<BaseResponse<List<SearchResponse>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<SearchResponse>>> call, Response<BaseResponse<List<SearchResponse>>> response) {
+                        if (!response.body().getData().isEmpty()) {
+                            arraylist.clear();
+                            arraylist.addAll(response.body().getData());
+                            adapter = new ListViewAdapter(HomeActivity.this, arraylist);
+                            listView.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    Intent intent = new Intent(HomeActivity.this, ProductDetailsOnSearchActivity.class);
+                                    intent.putExtra("QueryText", query);
+                                    startActivity(intent);
 
-                        arraylist.clear();
-                        arraylist = response.body().getData();
-                        adapter = new ListViewAdapter(HomeActivity.this, arraylist);
-                        listView.setAdapter(adapter);
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Intent intent = new Intent(HomeActivity.this, ProductDetailsOnSearchActivity.class);
-                                startActivity(intent);
-                            }
-                        });
+                                }
+                            });
+                        } else {
+                            arraylist.clear();
+                            SearchResponse searchResponse = new SearchResponse();
+                            searchResponse.setProductName("No Search result");
+                            arraylist.add(searchResponse);
+                            adapter = new ListViewAdapter(HomeActivity.this, arraylist);
+                            listView.setAdapter(adapter);
+                            listView.setOnItemClickListener(null);
+                        }
                     }
 
                     @Override
-                    public void onFailure(Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
+                    public void onFailure
+                            (Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
                         Log.e("Check", t.getMessage());
                     }
 
                 });
-        arraylist.clear();
         return false;
     }
 

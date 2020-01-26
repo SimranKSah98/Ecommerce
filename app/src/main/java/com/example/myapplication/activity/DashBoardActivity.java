@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,24 +27,41 @@ import retrofit2.Retrofit;
 
 public class DashBoardActivity extends AppCompatActivity {
 
-    private Button logout;
-    private Retrofit retrofit;
-    private Call<BaseResponse<Customer>> call;
-    private Customer customer;
-    TextView customerEmail, customerName;
+private Button logout,orderhistory;
+private Retrofit retrofit;
+private Call<BaseResponse<Customer>> call;
+private  Customer customer;
+TextView customerEmail,customerName,customerPassword;
+private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
+        initView();
         initBottomNavigation();
         initLogout();
         retrofitAndApiCall();
         apicallback();
+        initOrderhistory();
     }
 
-    private void initBottomNavigation() {
+    private void initView()
+    {
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.dashboad);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+    private void initBottomNavigation()
+    {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -62,6 +80,11 @@ public class DashBoardActivity extends AppCompatActivity {
                     case R.id.cart:
                         startActivity(new Intent(getApplicationContext(), CartActivity.class));
                         overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.category:
+                        startActivity(new Intent(getApplicationContext(),CategoryActivity.class));
+                        overridePendingTransition(0,0);
                         return true;
                 }
                 return false;
@@ -113,6 +136,19 @@ public class DashBoardActivity extends AppCompatActivity {
                 editor.clear();
                 editor.commit();
                 Intent intent = new Intent(DashBoardActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void initOrderhistory()
+    {
+        orderhistory=findViewById(R.id.orderhistory);
+        orderhistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(DashBoardActivity.this,OrderHistoryActivity.class);
+                intent.putExtra("customeremailid",customer.getEmailId());
                 startActivity(intent);
             }
         });

@@ -5,7 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +42,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class CartActivity extends AppCompatActivity {
+
     private Call<BaseResponse<CartResponse>> call;
     private String address;
     private RecyclerView cartRecyclerView;
@@ -49,6 +54,8 @@ public class CartActivity extends AppCompatActivity {
     private int initialQuantity, finalQuantity, changeInQuantity;
 
     CartResponse cartResponse;
+    private Toolbar toolbar;
+    Button btn_checkout, btn_buy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +101,11 @@ public class CartActivity extends AppCompatActivity {
 
                     case R.id.cart:
                         return true;
+
+                    case R.id.category:
+                        startActivity(new Intent(getApplicationContext(),CategoryActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
                 }
                 return false;
             }
@@ -104,9 +116,28 @@ public class CartActivity extends AppCompatActivity {
         cartAdapter = new CartAdapter(cartItems);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(CartActivity.this, 1);
         cartRecyclerView = findViewById(R.id.cart_recycler_view);
+        btn_checkout=findViewById(R.id.button);
+        btn_checkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn_checkout.setVisibility(v.INVISIBLE);
+                btn_buy.setVisibility(v.VISIBLE);
+            }
+        });
+        btn_buy=findViewById(R.id.buttonbuy);
         cartRecyclerView.setLayoutManager(layoutManager);
         cartRecyclerView.setItemAnimator(new DefaultItemAnimator());
         cartRecyclerView.setAdapter(cartAdapter);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.cart);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     public void initRetrofitAndCallApi() {

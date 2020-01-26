@@ -6,12 +6,16 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +24,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.controller.APIInterface;
 import com.example.myapplication.model.CustomerDetails;
 import com.example.myapplication.model.Signupbody;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import retrofit2.Call;
@@ -37,6 +42,7 @@ public class SignupActivity extends AppCompatActivity {
     private int PICK_IMAGE_REQUEST = 1;
     private static final int STORAGE_PERMISSION_CODE = 123;
     private Bitmap bitmap;
+    private Toolbar toolbar;
     private Uri filePath;
 
     @Override
@@ -45,9 +51,8 @@ public class SignupActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_signup);
         initView();
-//        select.setOnClickListener((View.OnClickListener) this);
-//        upload.setOnClickListener((View.OnClickListener) this);
         initClickListerner();
+        initBottomNavigation();
     }
 
     private void initClickListerner() {
@@ -92,10 +97,52 @@ public class SignupActivity extends AppCompatActivity {
         inputPassword = (EditText) findViewById(R.id.password);
         inputName = (EditText) findViewById(R.id.name);
         imageView = (ImageView) findViewById(R.id.imageView);
-//        select = (Button) findViewById(R.id.buttonChoose);
-//        upload = (Button) findViewById(R.id.buttonUpload);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.signup);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
     }
 
+
+    private void initBottomNavigation()
+    {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.dashboard);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.dashboard:
+                        return true;
+
+                    case R.id.home:
+                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.cart:
+                        startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+
+                    case R.id.category:
+                        startActivity(new Intent(getApplicationContext(),CategoryActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
 
     public void sendtoken(Signupbody signupBody) {
         App.getApp().getRetrofit().create(APIInterface.class).signup(signupBody).enqueue

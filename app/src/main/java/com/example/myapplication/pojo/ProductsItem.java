@@ -7,73 +7,73 @@ import java.io.Serializable;
 
 public class ProductsItem implements Serializable {
 
-	@SerializedName("id")
-	private String id;
+    @SerializedName("id")
+    private String id;
 
 
-	@SerializedName("image")
-	private String image;
+    @SerializedName("image")
+    private String image;
 
-	@SerializedName("quantity")
-	private int quantity;
+    @SerializedName("quantity")
+    private int quantity;
 
-	@SerializedName("price")
-	private Double price;
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
-	@SerializedName("name")
-	private String name;
+    public double getPrice() {
+        return price;
+    }
 
-	@SerializedName("productdescription")
-	private ProductDescription productDescription;
+    @SerializedName("price")
+    private double price;
+
+    @SerializedName("name")
+    private String name;
+
+    @SerializedName("productdescription")
+    private ProductDescription productDescription;
 
 
-	public ProductDescription getProductDescription() {
-		return productDescription;
-	}
+    public ProductDescription getProductDescription() {
+        return productDescription;
+    }
 
-	public void setProductDescription(ProductDescription productDescription) {
-		this.productDescription = productDescription;
-	}
+    public void setProductDescription(ProductDescription productDescription) {
+        this.productDescription = productDescription;
+    }
 
-	public void setImage(String image){
-		this.image = image;
-	}
+    public void setImage(String image) {
+        this.image = image;
+    }
 
-	public String getImage(){
-		return image;
-	}
+    public String getImage() {
+        return image;
+    }
 
-	public void setQuantity(int quantity){
-		this.quantity = quantity;
-	}
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
-	public int getQuantity(){
-		return quantity;
-	}
+    public int getQuantity() {
+        return quantity;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public Double getPrice() {
-		return price;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name){
-		this.name = name;
-	}
-
-	public String getName(){
-		return name;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
 //	@Override
 // 	public String toString(){
