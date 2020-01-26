@@ -107,12 +107,9 @@ public class SignupActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
     }
 
-
-    private void initBottomNavigation()
-    {
+    private void initBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -135,8 +132,8 @@ public class SignupActivity extends AppCompatActivity {
 
 
                     case R.id.category:
-                        startActivity(new Intent(getApplicationContext(),CategoryActivity.class));
-                        overridePendingTransition(0,0);
+                        startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
+                        overridePendingTransition(0, 0);
                         return true;
                 }
                 return false;
@@ -145,12 +142,15 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void sendtoken(Signupbody signupBody) {
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         App.getApp().getRetrofit().create(APIInterface.class).signup(signupBody).enqueue
                 (
                         new Callback<CustomerDetails>() {
                             @Override
                             public void onResponse(Call<CustomerDetails> call, Response<CustomerDetails> response) {
                                 if (response.isSuccessful()) {
+                                    progressBar.setVisibility(View.INVISIBLE);
                                     Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                                     startActivity(intent);
                                     Toast.makeText(SignupActivity.this, "Successfully", Toast.LENGTH_SHORT).show();
@@ -160,8 +160,7 @@ public class SignupActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(Call<CustomerDetails> call, Throwable t) {
                                 Toast.makeText(SignupActivity.this, "failed", Toast.LENGTH_SHORT).show();
-
-
+                                progressBar.setVisibility(View.INVISIBLE);
                             }
                         }
                 );

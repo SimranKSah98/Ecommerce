@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,11 +38,12 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
     private RecyclerView recyclerView;
     private CategoryProductAdapter categoryAdaptor;
     private Toolbar toolbar;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setContentView(R.layout.activity_categoryproducts);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_categoryproducts);
         onCategoryClick();
         initRecyclerView();
         initBottomNavigation();
@@ -73,8 +76,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
                 switch (item.getItemId()) {
                     case R.id.dashboard:
                         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-
-                        Boolean value = sharedPreferences.getBoolean("login_details", false);
+                        boolean value = sharedPreferences.getBoolean("login_details", false);
                         if (!value) {
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                             overridePendingTransition(0, 0);
@@ -107,10 +109,13 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
 
 
     private void onCategoryClick() {
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         App.getApp().getRetrofit().create(APIInterface.class).getRespectiveCategoryProducts(getIntent().getStringExtra("categoryId")).enqueue(
                 new Callback<BaseResponse<CategoriesItem>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<CategoriesItem>> call, Response<BaseResponse<CategoriesItem>> response) {
+                        progressBar.setVisibility(View.INVISIBLE);
                         productsItemList.clear();
                         productsItemList.addAll(response.body().getData().getProducts());
                         categoryAdaptor.notifyDataSetChanged();
@@ -118,7 +123,8 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
 
                     @Override
                     public void onFailure(Call<BaseResponse<CategoriesItem>> call, Throwable t) {
-
+                        Toast.makeText(CategoryProductsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
                 }
         );
@@ -129,6 +135,5 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
         Intent intent = new Intent(CategoryProductsActivity.this, ProductDescriptionActivity.class);
         intent.putExtra("productId", id);
         startActivity(intent);
-
     }
 }

@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.Application;
 
 import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -21,6 +22,7 @@ public class App extends Application {
         super.onCreate();
         FacebookSdk.setApplicationId("499064640741937");
         FacebookSdk.sdkInitialize(this);
+        AppEventsLogger.activateApp(this);
         setApp(this);
     }
 

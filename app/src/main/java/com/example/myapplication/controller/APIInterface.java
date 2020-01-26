@@ -56,8 +56,7 @@ public interface APIInterface {
     @POST("/cart/add/{customerId}")
     Call<BaseResponse<CartResponse>> updateCart(@Path("customerId") String string, @Body AddToCartRequestBody addToCartRequestBody);
 
-
-    @POST("customer/order-history/{span}/{customerEmailId}")
+    @GET("customer/order-history/{span}/{customerEmailId}")
     Call<BaseResponse<List<OrderHistory>>> getorderhistory(@Path("span") int span, @Path("customerEmailId") String userId);
 
     @GET("home/{categoryId}")

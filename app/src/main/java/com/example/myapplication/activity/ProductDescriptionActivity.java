@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,11 +51,12 @@ import retrofit2.Retrofit;
 
 //import com.example.myapplication.activity.adapter.MerchantAdapter;
 
-    public class ProductDescriptionActivity extends AppCompatActivity implements MerchantAdapter.OtherMerchantListener {
+public class ProductDescriptionActivity extends AppCompatActivity implements MerchantAdapter.OtherMerchantListener {
     private Retrofit retrofit;
     private Call<BaseResponse<ProductDescription>> call;
     private Call<BaseResponse<CartResponse>> callAddToCart;
     private List<ProductDescription> list = new ArrayList();
+    private ProgressBar progressBar;
     private ScaleGestureDetector scaleGestureDetector;
     private float mScaleFactor = 1.0f;
     private TextView productName, productPrice, merchantName, attributes, usp, description;
@@ -66,7 +68,7 @@ import retrofit2.Retrofit;
     private MerchantAdapter merchantAdapter;
     private ProductDescription productDescription;
     private ProductsItem productsItem;
-    private  AddToCartRequestBody addToCartRequestBody=new AddToCartRequestBody() ;
+    private AddToCartRequestBody addToCartRequestBody = new AddToCartRequestBody();
     private String merchantId, name;
     private List<AddToCartRequestBody> guestCartList = new ArrayList();
 
@@ -148,6 +150,8 @@ import retrofit2.Retrofit;
     public void initRetrofitAndCallApi() {
         retrofit = App.getApp().getRetrofit();
         APIInterface api = retrofit.create(APIInterface.class);
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         call = api.getProductDescription(getIntent().getStringExtra("productId"));
     }
 
@@ -171,6 +175,7 @@ import retrofit2.Retrofit;
             @Override
             public void onResponse(Call<BaseResponse<ProductDescription>> call, Response<BaseResponse<ProductDescription>> response) {
                 if (response.isSuccessful()) {
+                    progressBar.setVisibility(View.INVISIBLE);
                     productDescription = response.body().getData();
                     productName = findViewById(R.id.textView5);
                     productName.setText(productDescription.getName());
@@ -193,23 +198,23 @@ import retrofit2.Retrofit;
 
             @Override
             public void onFailure(Call<BaseResponse<ProductDescription>> call, Throwable t) {
-                Log.e("Check", t.getMessage());
+                Toast.makeText(ProductDescriptionActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
 
 
     }
 
-    private  void initAddToCart() {
+    private void initAddToCart() {
         addToCart = findViewById(R.id.addToCart);
         addToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                final Boolean value = sharedPreferences.getBoolean("login_details", false);
+                final boolean value = sharedPreferences.getBoolean("login_details", false);
                 if (value) {
-                //    addToCartRequestBody= new AddToCartRequestBody();
                     addToCartRequestBody.setImage(productDescription.getImage());
                     addToCartRequestBody.setMerchantName(productDescription.getMerchantName());
                     addToCartRequestBody.setName(name);
@@ -223,10 +228,13 @@ import retrofit2.Retrofit;
                     retrofit = App.getApp().getRetrofit();
                     APIInterface api = retrofit.create(APIInterface.class);
                     callAddToCart = api.updateCart(customerId, addToCartRequestBody);
+                    progressBar = findViewById(R.id.progress_bar);
+                    progressBar.setVisibility(View.VISIBLE);
                     callAddToCart.enqueue(new Callback<BaseResponse<CartResponse>>() {
                         @Override
                         public void onResponse(Call<BaseResponse<CartResponse>> call, Response<BaseResponse<CartResponse>> response) {
                             if (response.isSuccessful()) {
+                                progressBar.setVisibility(View.INVISIBLE);
                                 Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(ProductDescriptionActivity.this, CartActivity.class);
                                 startActivity(intent);
@@ -235,22 +243,17 @@ import retrofit2.Retrofit;
 
                         @Override
                         public void onFailure(Call<BaseResponse<CartResponse>> call, Throwable t) {
-                            Log.e("addToCart", t.getMessage());
-                            Toast.makeText(ProductDescriptionActivity.this, "Cart is empty", Toast.LENGTH_LONG);
+                            Toast.makeText(ProductDescriptionActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(ProductDescriptionActivity.this, HomeActivity.class);
                             startActivity(intent);
                         }
-
-
                     });
-
-
-                } else if (value == false) {
+                } else if (!value) {
                     String guestCart = sharedPreferences.getString("guestCart", "");
                     Gson gson = new Gson();
                     Type listType = new TypeToken<ArrayList<AddToCartRequestBody>>() {
                     }.getType();
-                    List<AddToCartRequestBody> addToCartRequestBodies = gson.fromJson(guestCart,listType );
+                    List<AddToCartRequestBody> addToCartRequestBodies = gson.fromJson(guestCart, listType);
                     String productId = getIntent().getStringExtra("productId");
                     if (null != addToCartRequestBodies) {
                         guestCartList.clear();
@@ -261,17 +264,14 @@ import retrofit2.Retrofit;
                                 addToCartRequestBody.setQuantity(addToCartRequestBody.getQuantity() + 1);
                                 guestCartList.add(addToCartRequestBody);
                                 setList("guestCart", guestCartList);
-
                                 Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
-                                Intent intent=new Intent(ProductDescriptionActivity.this,CartActivity.class);
+                                Intent intent = new Intent(ProductDescriptionActivity.this, CartActivity.class);
                                 startActivity(intent);
                                 return;
                             }
                         }
                     }
-
                     addToCartRequestBody.setImage(productDescription.getImage());
-
                     addToCartRequestBody.setMerchantName(productDescription.getMerchantName());
                     addToCartRequestBody.setName(name);
                     addToCartRequestBody.setPrice(productDescription.getPrice());
@@ -279,12 +279,9 @@ import retrofit2.Retrofit;
                     addToCartRequestBody.setProductId(productId);
                     addToCartRequestBody.setMerchantId(merchantId);
                     guestCartList.add(addToCartRequestBody);
-
                     setList("guestCart", guestCartList);
-
-
                     Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
-                    Intent intent=new Intent(ProductDescriptionActivity.this,CartActivity.class);
+                    Intent intent = new Intent(ProductDescriptionActivity.this, CartActivity.class);
                     startActivity(intent);
                     return;
                 }
@@ -299,13 +296,10 @@ import retrofit2.Retrofit;
         set(key, json);
     }
 
-
     public void set(String key, String value) {
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, value);
         editor.commit();
     }
-
-
 }

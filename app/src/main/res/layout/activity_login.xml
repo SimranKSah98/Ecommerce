@@ -8,6 +8,18 @@
     android:orientation="vertical"
     tools:context=".activity.LoginActivity">
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?attr/buttonStyleSmall"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_centerInParent="true"
+        android:background="@color/white"
+        android:indeterminateTint="@color/colorAccent"
+        android:indeterminateTintMode="src_atop"
+        android:padding="4dp"
+        android:visibility="gone" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -22,14 +34,15 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+
         <ImageView
             android:layout_width="300dp"
             android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/logo"
-            android:scaleType="fitXY" />
+            android:scaleType="fitXY"
+            android:src="@drawable/logo" />
 
         <EditText
             android:id="@+id/email"
@@ -87,7 +100,7 @@
             android:id="@+id/googlesign1"
             android:layout_width="200dp"
             android:layout_height="40dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp" />
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button"
