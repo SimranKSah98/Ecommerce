@@ -208,6 +208,7 @@ public class LoginActivity extends AppCompatActivity {
                             //  editor.putString("customerId",requestBody.)
                             editor.putString("customerEmailId", requestBody.getCustomerEmail());
                             editor.putBoolean("login_details", true);
+                          //  editor.putBoolean("cartCount")
                           //  editor.putString("customerId", customerDetails.getCustomerId());
                             editor.commit();
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);

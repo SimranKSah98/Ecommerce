@@ -57,7 +57,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     private LinearLayoutManager linearLayoutManager;
     private PopularProductsAdapter popularProductsAdapter;
     private Home home;
-
+    private int cartCount;
 
     ListView listView;
     ListViewAdapter adapter;
@@ -71,8 +71,8 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
         setContentView(R.layout.activity_home);
 
 
-
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+
 
         if (!sharedPreferences.contains("login_details")) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -120,6 +120,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
+
                     case R.id.dashboard:
                         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
 
@@ -137,9 +138,36 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                         return true;
 
                     case R.id.cart:
-                        startActivity(new Intent(getApplicationContext(), CartActivity.class));
-                        overridePendingTransition(0, 0);
-                        return true;
+                        sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+
+                        Boolean value1 = sharedPreferences.getBoolean("login_details", false);
+                        if (value1 == true) {
+                            if (cartCount > 0) {
+                                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                                overridePendingTransition(0, 0);
+                                return true;
+                            } else if(cartCount==0) {
+                                Toast.makeText(HomeActivity.this, "No products in cart", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                                overridePendingTransition(0, 0);
+                                return true;
+                            }
+
+
+                        } else if (value1 == false) {
+                            String cartEmptyCheck = sharedPreferences.getString("guestCart", "");
+                            if (null == cartEmptyCheck || cartEmptyCheck.isEmpty()) {
+
+                                Toast.makeText(HomeActivity.this, "No products in cart", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                                overridePendingTransition(0, 0);
+                                return true;
+                            } else {
+                                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                                overridePendingTransition(0, 0);
+                                return true;
+                            }
+                        }
 
 
                     case R.id.category:
@@ -167,6 +195,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                     home = response.body().getData();
                     categoriesList.clear();
                     list.clear();
+                    cartCount = home.getCartCount();
                     categoriesList.addAll(home.getCategories());
                     for (int i = 0; i < home.getCategories().size(); i++) {
                         list.addAll(home.getCategories().get(i).getProducts());
@@ -185,7 +214,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
 
     @Override
     public void onCardClick(String id) {
-     //   Toast.makeText(HomeActivity.this, id, Toast.LENGTH_LONG).show();
+        //   Toast.makeText(HomeActivity.this, id, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, ProductDescriptionActivity.class);
         intent.putExtra("productId", id);
         startActivity(intent);
@@ -203,8 +232,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     }
 
     @Override
-    public boolean onQueryTextSubmit(final String query)
-    {
+    public boolean onQueryTextSubmit(final String query) {
         App.getApp().getRetrofit().create(APIInterface.class).getSearchList(query).enqueue(
                 new Callback<BaseResponse<List<SearchResponse>>>() {
                     @Override

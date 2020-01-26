@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ import com.example.myapplication.adapter.MerchantAdapter;
 import com.example.myapplication.controller.APIInterface;
 import com.example.myapplication.pojo.AddToCartRequestBody;
 import com.example.myapplication.pojo.BaseResponse;
+import com.example.myapplication.pojo.CartResponse;
 import com.example.myapplication.pojo.MerchantListItem;
 import com.example.myapplication.pojo.ProductDescription;
 import com.example.myapplication.pojo.ProductsItem;
@@ -48,64 +50,37 @@ import retrofit2.Retrofit;
 
 //import com.example.myapplication.activity.adapter.MerchantAdapter;
 
-public class ProductDescriptionActivity extends AppCompatActivity implements MerchantAdapter.OtherMerchantListener {
-    //private  Button addToCart;
-
+    public class ProductDescriptionActivity extends AppCompatActivity implements MerchantAdapter.OtherMerchantListener {
     private Retrofit retrofit;
     private Call<BaseResponse<ProductDescription>> call;
-    private Call<BaseResponse<AddToCartRequestBody>> callAddToCart;
+    private Call<BaseResponse<CartResponse>> callAddToCart;
     private List<ProductDescription> list = new ArrayList();
-
-
     private ScaleGestureDetector scaleGestureDetector;
     private float mScaleFactor = 1.0f;
-
     private TextView productName, productPrice, merchantName, attributes, usp, description;
     private ImageView productImage;
     private Button addToCart;
-//    private Toolbar tbtoolbarmain;
     private Toolbar toolbar;
-
     private RecyclerView merchantrecyclerView;
     private RecyclerView commentView;
-
-
-    //   private MerchantAdapter merchantAdapter;
+    private MerchantAdapter merchantAdapter;
     private ProductDescription productDescription;
     private ProductsItem productsItem;
-    private AddToCartRequestBody addToCartRequestBody = new AddToCartRequestBody();
+    private  AddToCartRequestBody addToCartRequestBody ;
     private String merchantId, name;
-   // SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-  //  SharedPreferences.Editor editor=sharedPreferences.edit();
-   private List<AddToCartRequestBody> guestCartList=new ArrayList();
+    private List<AddToCartRequestBody> guestCartList = new ArrayList();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_description);
-
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
-
-
         initView();
         initAddToCart();
-
         initBottomNavigation();
-
     }
 
-
-    private void CartButtonClicked() {
-
-        SharedPreferences sharedPreferences = getSharedPreferences("user_details", MODE_PRIVATE);
-        Boolean value = sharedPreferences.getBoolean("login", false);
-
-        // resume from here
-
-    }
-
-    private void initBottomNavigation()
-    {
+    private void initBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -115,8 +90,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                 switch (item.getItemId()) {
                     case R.id.dashboard:
                         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-
-                        Boolean value = sharedPreferences.getBoolean("login_details", false);
+                        boolean value = sharedPreferences.getBoolean("login_details", false);
                         if (!value) {
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                             overridePendingTransition(0, 0);
@@ -138,8 +112,8 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                         return true;
 
                     case R.id.category:
-                        startActivity(new Intent(getApplicationContext(),CategoryActivity.class));
-                        overridePendingTransition(0,0);
+                        startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
+                        overridePendingTransition(0, 0);
                         return true;
                 }
                 return false;
@@ -155,10 +129,8 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
 
     @Override
     public void onMerchnatClick(MerchantListItem merchantListItem) {
-
         productPrice.setText(merchantListItem.getPrice());
         merchantName.setText(merchantListItem.getMerchantName());
-
     }
 
 
@@ -173,14 +145,11 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
         }
     }
 
-
-
     public void initRetrofitAndCallApi() {
         retrofit = App.getApp().getRetrofit();
         APIInterface api = retrofit.create(APIInterface.class);
         call = api.getProductDescription(getIntent().getStringExtra("productId"));
     }
-
 
     public void initView() {
         initRetrofitAndCallApi();
@@ -195,9 +164,6 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                 onBackPressed();
             }
         });
-
-        initRetrofitAndCallApi();
-        apiCallback();
     }
 
     private void apiCallback() {
@@ -206,29 +172,20 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
             public void onResponse(Call<BaseResponse<ProductDescription>> call, Response<BaseResponse<ProductDescription>> response) {
                 if (response.isSuccessful()) {
                     productDescription = response.body().getData();
-
                     productName = findViewById(R.id.textView5);
                     productName.setText(productDescription.getName());
-
-
                     productPrice = (TextView) findViewById(R.id.textView6);
                     productPrice.setText(String.valueOf(productDescription.getPrice()));
-
                     merchantName = (TextView) findViewById(R.id.textView7);
                     merchantName.setText(productDescription.getMerchantName());
-
                     attributes = (TextView) findViewById(R.id.textView8);
                     attributes.setText(String.valueOf(productDescription.getAttributes()));
-
                     usp = (TextView) findViewById(R.id.textView9);
                     usp.setText(productDescription.getUsp());
-
                     description = (TextView) findViewById(R.id.textView10);
                     description.setText(productDescription.getDescription());
-
                     productImage = (ImageView) findViewById(R.id.imageView2);
                     Glide.with(productImage.getContext()).load(productDescription.getImage()).into(productImage);
-
                     merchantId = productDescription.getMerchantId();
                     name = productDescription.getName();
                 }
@@ -243,21 +200,16 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
 
     }
 
-    private void initAddToCart() {
-
+    private  void initAddToCart() {
         addToCart = findViewById(R.id.addToCart);
-
-
         addToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-                  SharedPreferences.Editor editor=sharedPreferences.edit();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
                 final Boolean value = sharedPreferences.getBoolean("login_details", false);
-
-                if (value == true) {
-
-
+                if (value) {
+                    addToCartRequestBody= new AddToCartRequestBody();
                     addToCartRequestBody.setImage(productDescription.getImage());
                     addToCartRequestBody.setMerchantName(productDescription.getMerchantName());
                     addToCartRequestBody.setName(name);
@@ -266,18 +218,14 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                     String productId = getIntent().getStringExtra("productId");
                     addToCartRequestBody.setProductId(productId);
                     addToCartRequestBody.setMerchantId(merchantId);
-
                     sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
                     String customerId = sharedPreferences.getString("customerEmailId", "");
                     retrofit = App.getApp().getRetrofit();
                     APIInterface api = retrofit.create(APIInterface.class);
-                    //  System.out.println(customerId);
                     callAddToCart = api.updateCart(customerId, addToCartRequestBody);
-
-
-                    callAddToCart.enqueue(new Callback<BaseResponse<AddToCartRequestBody>>() {
+                    callAddToCart.enqueue(new Callback<BaseResponse<CartResponse>>() {
                         @Override
-                        public void onResponse(Call<BaseResponse<AddToCartRequestBody>> call, Response<BaseResponse<AddToCartRequestBody>> response) {
+                        public void onResponse(Call<BaseResponse<CartResponse>> call, Response<BaseResponse<CartResponse>> response) {
                             if (response.isSuccessful()) {
                                 Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(ProductDescriptionActivity.this, CartActivity.class);
@@ -286,31 +234,36 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                         }
 
                         @Override
-                        public void onFailure(Call<BaseResponse<AddToCartRequestBody>> call, Throwable t) {
+                        public void onFailure(Call<BaseResponse<CartResponse>> call, Throwable t) {
                             Log.e("addToCart", t.getMessage());
+                            Toast.makeText(ProductDescriptionActivity.this, "Cart is empty", Toast.LENGTH_LONG);
+                            Intent intent = new Intent(ProductDescriptionActivity.this, HomeActivity.class);
+                            startActivity(intent);
                         }
 
 
                     });
 
 
-                }
-
-                else if(value==false){
-
-                    String guestCart = sharedPreferences.getString("guestCart","");
-                    Gson gson=new Gson();
-                    Type listType = new TypeToken<ArrayList<AddToCartRequestBody>>(){}.getType();
-                    List<AddToCartRequestBody> addToCartRequestBodies=gson.fromJson(guestCart,listType);
+                } else if (value == false) {
+                    String guestCart = sharedPreferences.getString("guestCart", "");
+                    Gson gson = new Gson();
+                    Type listType = new TypeToken<ArrayList<AddToCartRequestBody>>() {
+                    }.getType();
+                    List<AddToCartRequestBody> addToCartRequestBodies = gson.fromJson(guestCart,listType );
                     String productId = getIntent().getStringExtra("productId");
-                    if(null!=addToCartRequestBodies){
+                    if (null != addToCartRequestBodies) {
+                        guestCartList.clear();
                         guestCartList.addAll(addToCartRequestBodies);
-                        for(AddToCartRequestBody addToCartRequestBody : guestCartList){
-                            if(addToCartRequestBody.getProductId().equals(productId)){
+                        for (AddToCartRequestBody addToCartRequestBody : guestCartList) {
+                            if (addToCartRequestBody.getProductId().equals(productId)) {
                                 guestCartList.remove(addToCartRequestBody);
-                                addToCartRequestBody.setQuantity(addToCartRequestBody.getQuantity()+1);
+                                addToCartRequestBody.setQuantity(addToCartRequestBody.getQuantity() + 1);
                                 guestCartList.add(addToCartRequestBody);
-                                setList("guestCart",guestCartList);
+                                setList("guestCart", guestCartList);
+                                Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
+                                Intent intent=new Intent(ProductDescriptionActivity.this,CartActivity.class);
+                                startActivity(intent);
                                 return;
                             }
                         }
@@ -326,8 +279,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                     addToCartRequestBody.setMerchantId(merchantId);
                     guestCartList.add(addToCartRequestBody);
 
-                    setList("guestCart",guestCartList);
-
+                    setList("guestCart", guestCartList);
 
 
                 }
@@ -343,9 +295,9 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
     }
 
 
-    public  void set(String key, String value) {
+    public void set(String key, String value) {
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-         SharedPreferences.Editor editor=sharedPreferences.edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, value);
         editor.commit();
     }

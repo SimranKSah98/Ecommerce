@@ -69,18 +69,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             quantity.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
                 @Override
                 public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
-                    if(newValue==0)
-                    {
 
-                    }
-                    else if((oldValue-newValue)>0)
-                    {
-
-                    }
-                    else
-                    {
-
-                    }
                 }
             });
         }

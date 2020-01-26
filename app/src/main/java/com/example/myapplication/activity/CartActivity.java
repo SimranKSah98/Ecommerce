@@ -51,6 +51,7 @@ public class CartActivity extends AppCompatActivity {
     private List<ProductsBoughtItem> cartItems = new ArrayList();
     private TextView productName, productPrice;
     private ElegantNumberButton elegantNumberButton;
+    Button removeFromCart;
     private int initialQuantity, finalQuantity, changeInQuantity;
 
     CartResponse cartResponse;
@@ -201,26 +202,7 @@ public class CartActivity extends AppCompatActivity {
     }
 
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//
-//        finalQuantity = Integer.parseInt(elegantNumberButton.getNumber());
-//
-//        if (initialQuantity != finalQuantity) {
-//
-//            if (finalQuantity == 0) {
-//                //call delete from cart
-//            } else {
-//                changeInQuantity = finalQuantity - initialQuantity;
-//                if (changeInQuantity > 0) {
-//                    //call addToCart
-//                } else if (changeInQuantity < 0) {
-//                    //call removeFromCart
-//
-//                }
-//            }
-//        }
-//
-//    }
+
+
+
 }
