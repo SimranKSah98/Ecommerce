@@ -119,7 +119,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
 
                     @Override
                     public void onFailure(Call<BaseResponse<Home>> call, Throwable t) {
-                        Toast.makeText(CategoryActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(CategoryActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
                     }
                 });

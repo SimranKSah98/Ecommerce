@@ -65,6 +65,9 @@ public interface APIInterface {
     @GET("/cart/getCartCount/{customerEmailId}")
     Call<BaseResponse<Integer>> getCartCount(@Path("customerEmailId") String string);
 
+    @POST("/cart/mergeCart/{customerId}")
+    Call<BaseResponse<CartResponse>> sendCartItemOnLogin(@Path("customerId") String string, @Body List<AddToCartRequestBody> addToCartRequestBody);
+
     @GET("/cart/buyNow/{customerEmailId}")
     Call<BaseResponse<Boolean>> buyNow(@Path("customerEmailId") String string);
 }

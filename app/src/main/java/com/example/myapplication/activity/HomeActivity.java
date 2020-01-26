@@ -133,7 +133,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                             overridePendingTransition(0, 0);
                             return true;
                             /*} else if (cartCount == 0) {
-                                Toast.makeText(HomeActivity.this, "No products in cart", Toast.LENGTH_LONG).show();
+                                Toast.makeText(HomeActivity.this, "No products in cart", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                                 overridePendingTransition(0, 0);
                                 return true;
@@ -143,7 +143,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                         } else if (value1 == false) {
                             String cartEmptyCheck = sharedPreferences.getString("guestCart", "");
                             if (null == cartEmptyCheck || cartEmptyCheck.isEmpty()) {
-                                Toast.makeText(HomeActivity.this, "No products in cart", Toast.LENGTH_LONG).show();
+                                Toast.makeText(HomeActivity.this, "No products in cart", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                                 overridePendingTransition(0, 0);
                                 return true;
@@ -195,7 +195,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
 
             @Override
             public void onFailure(Call<BaseResponse<Home>> call, Throwable t) {
-                Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
@@ -256,7 +256,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
 
                     @Override
                     public void onFailure(Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
-                        Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
                     }
 

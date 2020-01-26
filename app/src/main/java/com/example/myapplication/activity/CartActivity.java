@@ -220,7 +220,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Cartp
 
                 @Override
                 public void onFailure(Call<BaseResponse<CartResponse>> call, Throwable t) {
-                    Toast.makeText(CartActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CartActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.INVISIBLE);
                 }
             });
@@ -268,12 +268,28 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Cartp
             Type listType = new TypeToken<ArrayList<AddToCartRequestBody>>() {
             }.getType();
             List<AddToCartRequestBody> addToCartRequestBodies = gson.fromJson(cartItem, listType);
-            if (newquantity == 0) {
+            if (newValue == 0) {
                 addToCartRequestBodies.remove(position);
+                cartItems.remove(position);
             } else {
-                addToCartRequestBodies.get(position).setQuantity(newquantity);
+                addToCartRequestBodies.get(position).setQuantity(newValue);
+                cartItems.get(position).setQuantity(newValue);
             }
             cartAdapter.notifyDataSetChanged();
+            setList("guestCart", addToCartRequestBodies);
         }
+    }
+
+    public <AddToCartRequestBody> void setList(String key, List<AddToCartRequestBody> list) {
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        set(key, json);
+    }
+
+    public void set(String key, String value) {
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.commit();
     }
 }
