@@ -68,4 +68,6 @@ public interface APIInterface {
     @POST("/cart/mergeCart/{customerId}")
     Call<BaseResponse<CartResponse>> sendCartItemOnLogin(@Path("customerId") String string, @Body List<AddToCartRequestBody> addToCartRequestBody);
 
+    @GET("/cart/buyNow/{customerEmailId}")
+    Call<BaseResponse<Boolean>> buyNow(@Path("customerEmailId") String string);
 }
