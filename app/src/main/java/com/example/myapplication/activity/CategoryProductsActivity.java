@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,8 +42,8 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setContentView(R.layout.activity_categoryproducts);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_categoryproducts);
         onCategoryClick();
         initRecyclerView();
         initBottomNavigation();
@@ -75,8 +76,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
                 switch (item.getItemId()) {
                     case R.id.dashboard:
                         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-
-                        Boolean value = sharedPreferences.getBoolean("login_details", false);
+                        boolean value = sharedPreferences.getBoolean("login_details", false);
                         if (!value) {
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                             overridePendingTransition(0, 0);
@@ -123,7 +123,8 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
 
                     @Override
                     public void onFailure(Call<BaseResponse<CategoriesItem>> call, Throwable t) {
-
+                        Toast.makeText(CategoryProductsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
                 }
         );
@@ -134,6 +135,5 @@ public class CategoryProductsActivity extends AppCompatActivity implements Categ
         Intent intent = new Intent(CategoryProductsActivity.this, ProductDescriptionActivity.class);
         intent.putExtra("productId", id);
         startActivity(intent);
-
     }
 }

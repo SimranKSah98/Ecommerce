@@ -43,7 +43,6 @@ public class ProductDetailsOnSearchActivity extends AppCompatActivity implements
     Retrofit retrofit;
     Toolbar toolbar;
     private ProgressBar progressBar;
-
     private RecyclerView recyclerView;
     private SearchPopularAdapter searchPopularAdapter;
 
@@ -52,6 +51,8 @@ public class ProductDetailsOnSearchActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searchdetailspage);
         initRecycleView();
+        initRetrofitAndCallApi();
+        initBottomNavigation();
     }
 
     private void initRecycleView() {
@@ -68,13 +69,10 @@ public class ProductDetailsOnSearchActivity extends AppCompatActivity implements
         recyclerView = findViewById(R.id.searchrecycleview);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProductDetailsOnSearchActivity.this, 2);
         recyclerView.setLayoutManager(layoutManager);
-        searchPopularAdapter = new SearchPopularAdapter(arraylist,  this);
+        searchPopularAdapter = new SearchPopularAdapter(arraylist, this);
         recyclerView.setAdapter(searchPopularAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        initRetrofitAndCallApi();
-        initBottomNavigation();
     }
-
 
     private void initBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -85,8 +83,7 @@ public class ProductDetailsOnSearchActivity extends AppCompatActivity implements
                 switch (item.getItemId()) {
                     case R.id.dashboard:
                         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-
-                        Boolean value = sharedPreferences.getBoolean("login_details", false);
+                        boolean value = sharedPreferences.getBoolean("login_details", false);
                         if (!value) {
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                             overridePendingTransition(0, 0);
@@ -107,8 +104,8 @@ public class ProductDetailsOnSearchActivity extends AppCompatActivity implements
                         return true;
 
                     case R.id.category:
-                        startActivity(new Intent(getApplicationContext(),CategoryActivity.class));
-                        overridePendingTransition(0,0);
+                        startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
+                        overridePendingTransition(0, 0);
                         return true;
                 }
                 return false;
@@ -132,6 +129,7 @@ public class ProductDetailsOnSearchActivity extends AppCompatActivity implements
                     @Override
                     public void onFailure(Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
                         Toast.makeText(ProductDetailsOnSearchActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
                 }
         );

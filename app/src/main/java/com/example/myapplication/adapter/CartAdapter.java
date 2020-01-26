@@ -26,8 +26,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     List<ProductsBoughtItem> cartList;
     Cartpostion cartpostion;
 
-    public CartAdapter(List<ProductsBoughtItem> cartList) {
+    public CartAdapter(List<ProductsBoughtItem> cartList, Cartpostion cartpostion) {
         this.cartList = cartList;
+        this.cartpostion = cartpostion;
     }
 
     @NonNull
@@ -47,7 +48,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.quantity.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
             @Override
             public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
-                cartpostion.onCardclick(cartList.get(holder.getAdapterPosition()), newValue, holder.getAdapterPosition());
+                cartpostion.onCardclick(cartList.get(holder.getAdapterPosition()), oldValue, newValue, holder.getAdapterPosition());
             }
         });
     }
@@ -73,6 +74,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     }
 
     public interface Cartpostion {
-        void onCardclick(ProductsBoughtItem item, int newvalue, int postion);
+        void onCardclick(ProductsBoughtItem item, int oldValue, int newValue, int postion);
     }
 }

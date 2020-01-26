@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
     <androidx.cardview.widget.CardView
+        android:layout_marginLeft="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/merchant_card_view"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="4dp"
         >
 
         <LinearLayout
@@ -21,11 +27,12 @@
                 android:text="Merchant name:"
                 android:textStyle="bold"
                 ></TextView>
+
             <TextView
-                android:layout_width="150dp"
-                android:layout_height="20dp"
+                android:typeface="monospace"
                 android:id="@+id/other_merchant_name"
-                ></TextView>
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"></TextView>
             <TextView
                 android:layout_width="150dp"
                 android:layout_height="20dp"
@@ -33,6 +40,7 @@
                 android:textStyle="bold"
                 ></TextView>
           <TextView
+              android:typeface="monospace"
               android:layout_width="150dp"
               android:layout_height="20dp"
               android:id="@+id/other_merchant_product_price"
@@ -45,6 +53,7 @@
                 ></TextView>
 
             <TextView
+                android:typeface="monospace"
                 android:layout_width="150dp"
                 android:layout_height="20dp"
                 android:id="@+id/rating"

@@ -185,13 +185,13 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(Call<CustomerDetails> call, Response<CustomerDetails> response) {
                         if (response.isSuccessful()) {
                             customerDetails = response.body();
+                            progressBar.setVisibility(View.INVISIBLE);
                             SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.clear();
                             //  editor.putString("customerId",requestBody.)
                             editor.putString("customerEmailId", requestBody.getCustomerEmail());
                             editor.putBoolean("login_details", true);
-                            //  editor.putString("customerId", customerDetails.getCustomerId());
                             editor.commit();
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             startActivity(intent);
@@ -201,6 +201,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<CustomerDetails> call, Throwable t) {
                         Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
                 }
         );

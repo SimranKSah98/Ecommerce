@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activity.CategoryActivity">
 
-    <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+    <ProgressBar
         android:id="@+id/progress_bar"
         style="?attr/buttonStyleSmall"
-        android:layout_centerInParent="true"
         android:layout_width="70dp"
         android:layout_height="70dp"
+        android:layout_centerInParent="true"
+        android:background="@color/white"
         android:indeterminateTint="@color/colorAccent"
         android:indeterminateTintMode="src_atop"
-        android:background="@color/white"
         android:padding="4dp" />
 
     <androidx.appcompat.widget.Toolbar
@@ -28,7 +28,7 @@
         android:id="@+id/categoryLayoutRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"/>
+        android:layout_below="@id/toolbar" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -40,7 +40,5 @@
         app:itemTextColor="@android:color/white"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_navigation" />
-
-
 
 </RelativeLayout>

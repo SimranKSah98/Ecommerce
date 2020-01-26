@@ -75,8 +75,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
                 switch (item.getItemId()) {
                     case R.id.dashboard:
                         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-
-                        Boolean value = sharedPreferences.getBoolean("login_details", false);
+                        boolean value = sharedPreferences.getBoolean("login_details", false);
                         if (!value) {
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                             overridePendingTransition(0, 0);
@@ -106,7 +105,6 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
     }
 
     public void callHomeApi() {
-
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         App.getApp().getRetrofit().create(APIInterface.class).getProducts().enqueue(
@@ -122,7 +120,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
                     @Override
                     public void onFailure(Call<BaseResponse<Home>> call, Throwable t) {
                         Toast.makeText(CategoryActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
                 });
     }

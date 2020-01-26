@@ -49,7 +49,6 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     private Call<BaseResponse<Home>> call;
     private List<ProductsItem> list = new ArrayList();
     private List<CategoriesItem> categoriesList = new ArrayList();
-
     private TextView textView;
     private ImageView imageView;
     private RecyclerView recyclerView;
@@ -59,32 +58,26 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     private PopularProductsAdapter popularProductsAdapter;
     private Home home;
     private ProgressBar progressBar;
-
-
+    private int cartCount;
     ListView listView;
     ListViewAdapter adapter;
     SearchView searchView;
     List<SearchResponse> arraylist = new ArrayList<SearchResponse>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-
         if (!sharedPreferences.contains("login_details")) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("login_details", false);
             editor.commit();
         }
-
         initRecyclerView();
         initBottomNavigation();
         initRetrofitAndCallApi();
         apiCallback();
-
         searchView = (SearchView) findViewById(R.id.search);
         searchView.setOnQueryTextListener(HomeActivity.this);
     }
@@ -92,25 +85,20 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
 
     private void initRecyclerView() {
         categoryRecyclerView = findViewById(R.id.recycler_view_categories);
-
         categoryItemAdapter = new CategoryItemAdapter(categoriesList, this);
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         categoryRecyclerView.setLayoutManager(linearLayoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(HomeActivity.this, linearLayoutManager.getOrientation());
         categoryRecyclerView.addItemDecoration(dividerItemDecoration);
         categoryRecyclerView.setAdapter(categoryItemAdapter);
-
         popularProductsAdapter = new PopularProductsAdapter(list, this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(HomeActivity.this, 2);
-
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(popularProductsAdapter);
-
         listView = (ListView) findViewById(R.id.listview);
         listView.bringToFront();
-
     }
 
     private void initBottomNavigation() {
@@ -122,8 +110,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                 switch (item.getItemId()) {
                     case R.id.dashboard:
                         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-
-                        Boolean value = sharedPreferences.getBoolean("login_details", false);
+                        boolean value = sharedPreferences.getBoolean("login_details", false);
                         if (!value) {
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                             overridePendingTransition(0, 0);
@@ -137,10 +124,34 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                         return true;
 
                     case R.id.cart:
-                        startActivity(new Intent(getApplicationContext(), CartActivity.class));
-                        overridePendingTransition(0, 0);
-                        return true;
+                        sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+                        boolean value1 = sharedPreferences.getBoolean("login_details", false);
+                        if (value1) {
+                            if (cartCount > 0) {
+                                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                                overridePendingTransition(0, 0);
+                                return true;
+                            } else if (cartCount == 0) {
+                                Toast.makeText(HomeActivity.this, "No products in cart", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                                overridePendingTransition(0, 0);
+                                return true;
+                            }
 
+
+                        } else if (value1 == false) {
+                            String cartEmptyCheck = sharedPreferences.getString("guestCart", "");
+                            if (null == cartEmptyCheck || cartEmptyCheck.isEmpty()) {
+                                Toast.makeText(HomeActivity.this, "No products in cart", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                                overridePendingTransition(0, 0);
+                                return true;
+                            } else {
+                                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                                overridePendingTransition(0, 0);
+                                return true;
+                            }
+                        }
 
                     case R.id.category:
                         startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
@@ -161,7 +172,6 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     }
 
     private void apiCallback() {
-
         call.enqueue(new Callback<BaseResponse<Home>>() {
             @Override
             public void onResponse(Call<BaseResponse<Home>> call, Response<BaseResponse<Home>> response) {
@@ -170,6 +180,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                     home = response.body().getData();
                     categoriesList.clear();
                     list.clear();
+                    cartCount = home.getCartCount();
                     categoriesList.addAll(home.getCategories());
                     for (int i = 0; i < home.getCategories().size(); i++) {
                         list.addAll(home.getCategories().get(i).getProducts());
@@ -181,19 +192,18 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
 
             @Override
             public void onFailure(Call<BaseResponse<Home>> call, Throwable t) {
-                Log.e("Check", t.getMessage());
+                Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
     }
 
     @Override
     public void onCardClick(String id) {
-        //   Toast.makeText(HomeActivity.this, id, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, ProductDescriptionActivity.class);
         intent.putExtra("productId", id);
         startActivity(intent);
     }
-
 
     @Override
     public void onTextClick(String categoryId) {
@@ -244,6 +254,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                     @Override
                     public void onFailure(Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
                         Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
 
                 });
