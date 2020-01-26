@@ -48,6 +48,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     private Call<BaseResponse<Home>> call;
     private List<ProductsItem> list = new ArrayList();
     private List<CategoriesItem> categoriesList = new ArrayList();
+    private  Call<BaseResponse<Integer>> callCartCount;
 
     private TextView textView;
     private ImageView imageView;
@@ -57,7 +58,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     private LinearLayoutManager linearLayoutManager;
     private PopularProductsAdapter popularProductsAdapter;
     private Home home;
-    private int cartCount;
+  //  private int cartCount;
 
     ListView listView;
     ListViewAdapter adapter;
@@ -72,7 +73,6 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
 
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-
 
         if (!sharedPreferences.contains("login_details")) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -142,16 +142,16 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
 
                         Boolean value1 = sharedPreferences.getBoolean("login_details", false);
                         if (value1 == true) {
-                            if (cartCount > 0) {
+                           // if (cartCount > 0) {
                                 startActivity(new Intent(getApplicationContext(), CartActivity.class));
                                 overridePendingTransition(0, 0);
                                 return true;
-                            } else if(cartCount==0) {
-                                Toast.makeText(HomeActivity.this, "No products in cart", Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                                overridePendingTransition(0, 0);
-                                return true;
-                            }
+//                          /  } else if(cartCount==0) {
+//                                Toast.makeText(HomeActivity.this, "No products in cart", Toast.LENGTH_LONG).show();
+//                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+//                                overridePendingTransition(0, 0);
+//                                return true;
+
 
 
                         } else if (value1 == false) {
@@ -184,6 +184,9 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
         retrofit = App.getApp().getRetrofit();
         APIInterface api = retrofit.create(APIInterface.class);
         call = api.getProducts();
+      SharedPreferences  sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+   //   sharedPreferences
+    //    callCartCount=api.getCartCount()
     }
 
     private void apiCallback() {
@@ -195,7 +198,7 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                     home = response.body().getData();
                     categoriesList.clear();
                     list.clear();
-                    cartCount = home.getCartCount();
+                  //  cartCount = home.getCartCount();
                     categoriesList.addAll(home.getCategories());
                     for (int i = 0; i < home.getCategories().size(); i++) {
                         list.addAll(home.getCategories().get(i).getProducts());

@@ -66,7 +66,7 @@ import retrofit2.Retrofit;
     private MerchantAdapter merchantAdapter;
     private ProductDescription productDescription;
     private ProductsItem productsItem;
-    private  AddToCartRequestBody addToCartRequestBody ;
+    private  AddToCartRequestBody addToCartRequestBody=new AddToCartRequestBody() ;
     private String merchantId, name;
     private List<AddToCartRequestBody> guestCartList = new ArrayList();
 
@@ -209,7 +209,7 @@ import retrofit2.Retrofit;
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 final Boolean value = sharedPreferences.getBoolean("login_details", false);
                 if (value) {
-                    addToCartRequestBody= new AddToCartRequestBody();
+                //    addToCartRequestBody= new AddToCartRequestBody();
                     addToCartRequestBody.setImage(productDescription.getImage());
                     addToCartRequestBody.setMerchantName(productDescription.getMerchantName());
                     addToCartRequestBody.setName(name);
@@ -261,6 +261,7 @@ import retrofit2.Retrofit;
                                 addToCartRequestBody.setQuantity(addToCartRequestBody.getQuantity() + 1);
                                 guestCartList.add(addToCartRequestBody);
                                 setList("guestCart", guestCartList);
+
                                 Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
                                 Intent intent=new Intent(ProductDescriptionActivity.this,CartActivity.class);
                                 startActivity(intent);
@@ -282,6 +283,10 @@ import retrofit2.Retrofit;
                     setList("guestCart", guestCartList);
 
 
+                    Toast.makeText(ProductDescriptionActivity.this, "Added to cart", Toast.LENGTH_LONG).show();
+                    Intent intent=new Intent(ProductDescriptionActivity.this,CartActivity.class);
+                    startActivity(intent);
+                    return;
                 }
             }
         });
