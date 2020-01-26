@@ -50,18 +50,7 @@
                 android:id="@+id/rating"
                 ></TextView>
 
-            <TextView
-                android:layout_width="150dp"
-                android:layout_height="20dp"
-                android:text="USP:"
-                android:textStyle="bold"
-                ></TextView>
 
-            <TextView
-                android:layout_width="150dp"
-                android:layout_height="20dp"
-                android:id="@+id/usp"
-                ></TextView>
 
         </LinearLayout>
 

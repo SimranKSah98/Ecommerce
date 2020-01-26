@@ -18,7 +18,7 @@ public class ProductsItem implements Serializable {
 	private int quantity;
 
 	@SerializedName("price")
-	private int price;
+	private Double price;
 
 	@SerializedName("name")
 	private String name;
@@ -55,12 +55,12 @@ public class ProductsItem implements Serializable {
 		return id;
 	}
 
-	public void setPrice(int price){
-		this.price = price;
+	public Double getPrice() {
+		return price;
 	}
 
-	public int getPrice(){
-		return price;
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 
 	public void setName(String name){

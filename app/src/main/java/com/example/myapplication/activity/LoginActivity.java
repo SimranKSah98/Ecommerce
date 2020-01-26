@@ -35,9 +35,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword;
     private FirebaseAuth auth;
-    private Button btnSignup, btnLogin,btnfb;
+    private Button btnSignup, btnLogin, btnfb;
     private SignInButton signInButton;
-    private int RC_SIGN_IN=1;
+    private int RC_SIGN_IN = 1;
     private GoogleSignInClient googleSignInClient;
     private CustomerDetails customerDetails;
 
@@ -59,16 +59,15 @@ public class LoginActivity extends AppCompatActivity {
 //        editor.commit();
 
 
-
     }
 
     private void initView() {
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         btnSignup = (Button) findViewById(R.id.btn_signup);
-        btnLogin= (Button) findViewById(R.id.btn_login);
-        signInButton =(SignInButton) findViewById(R.id.googlesign1);
-        btnfb=(Button) findViewById(R.id.login_button);
+        btnLogin = (Button) findViewById(R.id.btn_login);
+        signInButton = (SignInButton) findViewById(R.id.googlesign1);
+        btnfb = (Button) findViewById(R.id.login_button);
     }
 
     private void initClickListerner() {
@@ -81,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
         btnfb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(LoginActivity.this, FbActivity.class);
+                Intent intent = new Intent(LoginActivity.this, FbActivity.class);
                 startActivity(intent);
             }
         });
@@ -91,8 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                 signIn();
             }
         });
-        btnLogin.setOnClickListener(new View.OnClickListener()
-        {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = inputEmail.getText().toString();
@@ -105,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                LoginRequestBody requestBody = new LoginRequestBody("","manual",email,password,"");
+                LoginRequestBody requestBody = new LoginRequestBody("", "manual", email, password, "");
                 sendtoken(requestBody);
             }
         });
@@ -113,68 +111,63 @@ public class LoginActivity extends AppCompatActivity {
 
 
     //GOOGLE
-    private void signIn()
-    {
-        GoogleSignInOptions gso=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+    private void signIn() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail().build();
-        googleSignInClient= GoogleSignIn.getClient(this,gso);
-        Intent signInIntent=googleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent,RC_SIGN_IN);
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==RC_SIGN_IN)
-        {
-            Task<GoogleSignInAccount> task= GoogleSignIn.getSignedInAccountFromIntent(data);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
     }
-    private void handleSignInResult(Task<GoogleSignInAccount> completedtask)
-    {
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedtask) {
         try {
-            GoogleSignInAccount account=completedtask.getResult(ApiException.class);
+            GoogleSignInAccount account = completedtask.getResult(ApiException.class);
             Toast.makeText(LoginActivity.this, "Signed In", Toast.LENGTH_SHORT).show();
             FirebaseGoogleAuth(account);
-        }
-        catch (ApiException e) {
-            Toast.makeText (LoginActivity.this, "Signed In failed", Toast.LENGTH_SHORT).show();
+        } catch (ApiException e) {
+            Toast.makeText(LoginActivity.this, "Signed In failed", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void FirebaseGoogleAuth(GoogleSignInAccount acct)
-    {
-        LoginRequestBody requestBody = new LoginRequestBody("","google",acct.getEmail(),"pass",acct.getIdToken());
+    private void FirebaseGoogleAuth(GoogleSignInAccount acct) {
+        LoginRequestBody requestBody = new LoginRequestBody("", "google", acct.getEmail(), "pass", acct.getIdToken());
         sendtoken(requestBody);
     }
 
 
-    private void sendtoken(final LoginRequestBody requestBody)
-    {
+    private void sendtoken(final LoginRequestBody requestBody) {
         App.getApp().getRetrofit().create(APIInterface.class).getCus(requestBody).enqueue(
                 new Callback<CustomerDetails>() {
                     @Override
                     public void onResponse(Call<CustomerDetails> call, Response<CustomerDetails> response) {
                         if (response.isSuccessful()) {
-                            customerDetails=response.body();
-                            SharedPreferences sharedPreferences=getSharedPreferences("com.example.myapplication.activity", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor=sharedPreferences.edit();
+                            customerDetails = response.body();
+                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.clear();
-                          //  editor.putString("customerId",requestBody.)
-                            editor.putString("customerEmailId",requestBody.getCustomerEmail());
-                            editor.putBoolean("login_details",true);
-                            editor.putString("customerId",customerDetails.getCustomerId());
+                            //  editor.putString("customerId",requestBody.)
+                            editor.putString("customerEmailId", requestBody.getCustomerEmail());
+                            editor.putBoolean("login_details", true);
+                          //  editor.putString("customerId", customerDetails.getCustomerId());
                             editor.commit();
-                            Intent intent=new Intent(LoginActivity.this,HomeActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             startActivity(intent);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<CustomerDetails> call, Throwable t) {
-                        Toast.makeText (LoginActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "failed", Toast.LENGTH_SHORT).show();
                     }
                 }
         );

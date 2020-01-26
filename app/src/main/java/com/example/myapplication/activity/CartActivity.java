@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.example.myapplication.App;
 import com.example.myapplication.R;
+import com.example.myapplication.pojo.AddToCartRequestBody;
 import com.example.myapplication.pojo.BaseResponse;
 import com.example.myapplication.pojo.CartItem;
 import com.example.myapplication.pojo.CartResponse;
@@ -23,7 +25,10 @@ import com.example.myapplication.pojo.ProductsItem;
 import com.example.myapplication.adapter.CartAdapter;
 import com.example.myapplication.controller.APIInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,17 +38,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class CartActivity extends AppCompatActivity {
-
-  //  private List<ProductsBoughtItem> cartList = new ArrayList();
     private Call<BaseResponse<CartResponse>> call;
     private String address;
     private RecyclerView cartRecyclerView;
     private CartAdapter cartAdapter;
     private Retrofit retrofit;
-    private List<ProductsBoughtItem> cartItems=new ArrayList();
+    private List<ProductsBoughtItem> cartItems = new ArrayList();
     private TextView productName, productPrice;
-   // CartAdapter cartAdapter;
-   // CartItem cartItem;
+    private ElegantNumberButton elegantNumberButton;
+    private int initialQuantity, finalQuantity, changeInQuantity;
+
     CartResponse cartResponse;
 
     @Override
@@ -52,8 +56,12 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
         initBottomNavigation();
         initRecyclerView();
-         initRetrofitAndCallApi();
-         apiCallback();
+        initRetrofitAndCallApi();
+        apiCallback();
+//        elegantNumberButton = findViewById(R.id.cart_product_quantity);
+//        String s=elegantNumberButton.getNumber();
+//        initialQuantity = Integer.parseInt(s);
+
     }
 
     private void initBottomNavigation() {
@@ -104,34 +112,84 @@ public class CartActivity extends AppCompatActivity {
     public void initRetrofitAndCallApi() {
         retrofit = App.getApp().getRetrofit();
         APIInterface api = retrofit.create(APIInterface.class);
-        SharedPreferences sharedPreferences=getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-        String customerEmail=sharedPreferences.getString("customerEmailId",null);
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
 
+        Boolean value = sharedPreferences.getBoolean("login_details", false);
+        if (value == true) {
+            String customerEmail = sharedPreferences.getString("customerEmailId", null);
 
-        call = api.getCartItems(customerEmail);
+            call = api.getCartItems(customerEmail);
+        }
+
+        else if(value==false){
+         String cartItem=sharedPreferences.getString("guestCart","");
+         Gson gson=new Gson();
+            Type listType = new TypeToken<ArrayList<AddToCartRequestBody>>(){}.getType();
+            List<AddToCartRequestBody> addToCartRequestBodies=gson.fromJson(cartItem,listType);
+
+            for(int i=0;i<addToCartRequestBodies.size();i++){
+                 ProductsBoughtItem productsBoughtItem=new ProductsBoughtItem();
+
+                productsBoughtItem.setImage(addToCartRequestBodies.get(i).getImage());
+            productsBoughtItem.setPrice(addToCartRequestBodies.get(i).getPrice());
+            productsBoughtItem.setName(addToCartRequestBodies.get(i).getName());
+            productsBoughtItem.setQuantity(addToCartRequestBodies.get(i).getQuantity());
+                cartItems.add(productsBoughtItem);
+
+            }
+            cartAdapter.notifyDataSetChanged();
+
+        }
     }
 
     public void apiCallback() {
-        call.enqueue(new Callback<BaseResponse<CartResponse>>() {
-            @Override
-            public void onResponse(Call<BaseResponse<CartResponse>> call, Response<BaseResponse<CartResponse>> response) {
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+        Boolean value = sharedPreferences.getBoolean("login_details", false);
+        if (value == true) {
+            call.enqueue(new Callback<BaseResponse<CartResponse>>() {
+                @Override
+                public void onResponse(Call<BaseResponse<CartResponse>> call, Response<BaseResponse<CartResponse>> response) {
 
-                if (response.isSuccessful()) {
+                    if (response.isSuccessful()) {
 
-                    cartResponse=response.body().getData();
+                        cartResponse = response.body().getData();
 
-                    cartItems.addAll(cartResponse.getProductsBought());
-                    cartAdapter.notifyDataSetChanged();
-
-
-
+                        cartItems.addAll(cartResponse.getProductsBought());
+                        cartAdapter.notifyDataSetChanged();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<BaseResponse<CartResponse>> call, Throwable t) {
-                Log.e("Check", t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<BaseResponse<CartResponse>> call, Throwable t) {
+                    Log.e("Check", t.getMessage());
+                }
+            });
+
+        }
+
     }
+
+
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//
+//        finalQuantity = Integer.parseInt(elegantNumberButton.getNumber());
+//
+//        if (initialQuantity != finalQuantity) {
+//
+//            if (finalQuantity == 0) {
+//                //call delete from cart
+//            } else {
+//                changeInQuantity = finalQuantity - initialQuantity;
+//                if (changeInQuantity > 0) {
+//                    //call addToCart
+//                } else if (changeInQuantity < 0) {
+//                    //call removeFromCart
+//
+//                }
+//            }
+//        }
+//
+//    }
 }

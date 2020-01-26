@@ -45,6 +45,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.quantity.setNumber(String.valueOf(productsItem.getQuantity()));
 
 
+
     }
 
     @Override

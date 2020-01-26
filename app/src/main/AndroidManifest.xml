@@ -24,7 +24,7 @@
         <activity android:name=".activity.DashBoardActivity" />
         <activity android:name=".activity.CartActivity" />
         <activity android:name=".activity.ProductDescriptionActivity" />
-<activity android:name=".activity.ProductDetailsOnSearchActivity"/>
+        <activity android:name=".activity.ProductDetailsOnSearchActivity" />
         <activity android:name=".activity.HomeActivity">
 
             <intent-filter>

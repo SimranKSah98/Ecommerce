@@ -36,7 +36,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         list = (ListView) findViewById(R.id.listview);
         searchView = (SearchView) findViewById(R.id.search);
         searchView.setOnQueryTextListener(this);
-        searchView.setOnCloseListener(new SearchView.OnCloseListener(){
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
                 list.setAdapter(null);
@@ -46,14 +46,13 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query)
-    {
+    public boolean onQueryTextSubmit(String query) {
         App.getApp().getRetrofit().create(APIInterface.class).getSearchList(query).enqueue(
                 new Callback<BaseResponse<List<SearchResponse>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<SearchResponse>>> call, Response<BaseResponse<List<SearchResponse>>> response) {
 
-                        arraylist=response.body().getData();
+                        arraylist = response.body().getData();
                         adapter = new ListViewAdapter(SearchActivity.this, arraylist);
                         list.setAdapter(adapter);
 
@@ -61,15 +60,16 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
                     @Override
                     public void onFailure(Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
-                        Log.e("Check",t.getMessage());
+                        Log.e("Check", t.getMessage());
                     }
 
                 });
         return false;
     }
+
     @Override
     public boolean onQueryTextChange(String newText) {
-        if(newText.length()==0){
+        if (newText.length() == 0) {
             arraylist.clear();
             adapter.notifyDataSetChanged();
         }

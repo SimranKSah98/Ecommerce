@@ -12,7 +12,7 @@ public class App extends Application {
 
     private static Retrofit retrofit;
     private static App app;
-    public static String BASE_URL = "http://10.177.68.47:8089";
+    public static String BASE_URL = "http://192.168.1.9:8089";
 
     @Override
     public void onCreate() {

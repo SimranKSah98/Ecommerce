@@ -26,11 +26,11 @@ import retrofit2.Retrofit;
 
 public class DashBoardActivity extends AppCompatActivity {
 
-private Button logout;
-private Retrofit retrofit;
-private Call<BaseResponse<Customer>> call;
-private  Customer customer;
-TextView customerEmail,customerName,customerPassword;
+    private Button logout;
+    private Retrofit retrofit;
+    private Call<BaseResponse<Customer>> call;
+    private Customer customer;
+    TextView customerEmail, customerName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +43,7 @@ TextView customerEmail,customerName,customerPassword;
         apicallback();
     }
 
-    private void initBottomNavigation()
-    {
+    private void initBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -70,62 +69,50 @@ TextView customerEmail,customerName,customerPassword;
         });
     }
 
-    public void retrofitAndApiCall()
-    {
-        retrofit= App.getApp().getRetrofit();
-        APIInterface api=retrofit.create(APIInterface.class);
-        SharedPreferences sharedPreferences=getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-        String customerEmail=sharedPreferences.getString("customerEmailId",null);
+    public void retrofitAndApiCall() {
+        retrofit = App.getApp().getRetrofit();
+        APIInterface api = retrofit.create(APIInterface.class);
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+        String customerEmail = sharedPreferences.getString("customerEmailId", "");
 
-        call=api.getCustomerdetails(customerEmail);
-        Log.i("NAVEEN",customerEmail);
+        call = api.getCustomerdetails(customerEmail);
+        Log.i("NAVEEN", customerEmail);
     }
 
-   private void apicallback()
-   {
-       call.enqueue(new Callback<BaseResponse<Customer>>() {
-           @Override
-           public void onResponse(Call<BaseResponse<Customer>> call, Response<BaseResponse<Customer>> response) {
+    private void apicallback() {
+        call.enqueue(new Callback<BaseResponse<Customer>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<Customer>> call, Response<BaseResponse<Customer>> response) {
 
-               if(response.isSuccessful())
-               {
-                   customer=response.body().getData();
+                if (response.isSuccessful()) {
+                    customer = response.body().getData();
 
-                   customerEmail=findViewById(R.id.customer_email);
-                   customerEmail.setText(customer.getEmailId());
+                    customerEmail = findViewById(R.id.customer_email);
+                    customerEmail.setText(customer.getEmailId());
 
-                   customerName=findViewById(R.id.customer_name);
-                   customerName.setText(customer.getCustomerName());
+                    customerName = findViewById(R.id.customer_name);
+                    customerName.setText(customer.getCustomerName());
+                }
+            }
 
+            @Override
+            public void onFailure(Call<BaseResponse<Customer>> call, Throwable t) {
 
-
-
-               }
-
-
-
-           }
-
-           @Override
-           public void onFailure(Call<BaseResponse<Customer>> call, Throwable t) {
-
-           }
-       });
-   }
+            }
+        });
+    }
 
 
-
-    private void initLogout()
-    {
-        logout=findViewById(R.id.button3);
+    private void initLogout() {
+        logout = findViewById(R.id.button3);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences sharedPreferences=getSharedPreferences("com.example.myapplication.activity",MODE_PRIVATE);
-                SharedPreferences.Editor editor=sharedPreferences.edit();
+                SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.clear();
                 editor.commit();
-                Intent intent=new Intent(DashBoardActivity.this,HomeActivity.class);
+                Intent intent = new Intent(DashBoardActivity.this, HomeActivity.class);
                 startActivity(intent);
             }
         });

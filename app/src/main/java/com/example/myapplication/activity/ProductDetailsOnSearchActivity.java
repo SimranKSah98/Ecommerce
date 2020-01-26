@@ -28,36 +28,35 @@ import retrofit2.Retrofit;
 public class ProductDetailsOnSearchActivity extends AppCompatActivity implements PopularProductsAdapter.OnCardListener {
 
     private List<ProductsItem> productlist = new ArrayList();
-    Call <BaseResponse<List<SearchResponse>>> call;
+    Call<BaseResponse<List<SearchResponse>>> call;
     List<SearchResponse> arraylist = new ArrayList<SearchResponse>();
     Retrofit retrofit;
 
     private RecyclerView recyclerView;
     private SearchPopularAdapter searchPopularAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initRecycleView();
     }
 
-    private void initRecycleView()
-    {
+    private void initRecycleView() {
         setContentView(R.layout.activity_searchdetailspage);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProductDetailsOnSearchActivity.this, 2);
         recyclerView = findViewById(R.id.searchrecycleview);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-       // initRetrofitAndCallApi();
+        // initRetrofitAndCallApi();
     }
 
-    public void initRetrofitAndCallApi(String str)
-    {
+    public void initRetrofitAndCallApi(String str) {
         App.getApp().getRetrofit().create(APIInterface.class).getSearchList(str).enqueue(
                 new Callback<BaseResponse<List<SearchResponse>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<SearchResponse>>> call, Response<BaseResponse<List<SearchResponse>>> response) {
-                        arraylist=response.body().getData();
-                        searchPopularAdapter =new SearchPopularAdapter(ProductDetailsOnSearchActivity.this, arraylist);
+                        arraylist = response.body().getData();
+                        searchPopularAdapter = new SearchPopularAdapter(ProductDetailsOnSearchActivity.this, arraylist);
                         recyclerView.setAdapter(searchPopularAdapter);
 
                     }

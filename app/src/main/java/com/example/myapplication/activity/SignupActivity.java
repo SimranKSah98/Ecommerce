@@ -97,27 +97,26 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
-    public void sendtoken(Signupbody signupBody)
-    {
+    public void sendtoken(Signupbody signupBody) {
         App.getApp().getRetrofit().create(APIInterface.class).signup(signupBody).enqueue
                 (
-                new Callback<CustomerDetails>() {
-                    @Override
-                    public void onResponse(Call<CustomerDetails> call, Response<CustomerDetails> response) {
-                        if (response.isSuccessful()) {
-                            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            Toast.makeText(SignupActivity.this, "Successfully", Toast.LENGTH_SHORT).show();
+                        new Callback<CustomerDetails>() {
+                            @Override
+                            public void onResponse(Call<CustomerDetails> call, Response<CustomerDetails> response) {
+                                if (response.isSuccessful()) {
+                                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                    Toast.makeText(SignupActivity.this, "Successfully", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<CustomerDetails> call, Throwable t) {
+                                Toast.makeText(SignupActivity.this, "failed", Toast.LENGTH_SHORT).show();
+
+
+                            }
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<CustomerDetails> call, Throwable t) {
-                        Toast.makeText(SignupActivity.this, "failed", Toast.LENGTH_SHORT).show();
-
-
-                    }
-                }
-        );
+                );
     }
 }

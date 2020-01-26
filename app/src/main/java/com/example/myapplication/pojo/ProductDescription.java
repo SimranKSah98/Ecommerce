@@ -20,6 +20,10 @@ public class ProductDescription{
 	private ProductsItem productsItem;
 
 
+	@SerializedName("merchantId")
+	private String merchantId;
+
+
 	@SerializedName("image")
 	private String image;
 
@@ -52,6 +56,22 @@ public class ProductDescription{
 
 	@SerializedName("merchantName")
 	private String merchantName;
+
+	public String getMerchantId() {
+		return merchantId;
+	}
+
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+
+	public double getMerchantRating() {
+		return merchantRating;
+	}
+
+	public void setMerchantRating(double merchantRating) {
+		this.merchantRating = merchantRating;
+	}
 
 	public void setImage(String image){
 		this.image = image;
@@ -142,20 +162,21 @@ public class ProductDescription{
 	}
 
 	@Override
- 	public String toString(){
-		return 
-			"ProductDescription{" + 
-			"image = '" + image + '\'' + 
-			",usp = '" + usp + '\'' + 
-			",comments = '" + comments + '\'' + 
-			",mechantRating = '" + merchantRating + '\'' +
-			",price = '" + price + '\'' + 
-			",name = '" + name + '\'' + 
-			",description = '" + description + '\'' + 
-			",avgRating = '" + avgRating + '\'' + 
-			",attributes = '" + attributes + '\'' + 
-			",stock = '" + stock + '\'' + 
-			",merchantName = '" + merchantName + '\'' + 
-			"}";
-		}
+	public String toString() {
+		return "ProductDescription{" +
+				"productsItem=" + productsItem +
+				", merchantId='" + merchantId + '\'' +
+				", image='" + image + '\'' +
+				", usp='" + usp + '\'' +
+				", comments=" + comments +
+				", merchantRating=" + merchantRating +
+				", price=" + price +
+				", name='" + name + '\'' +
+				", description='" + description + '\'' +
+				", avgRating=" + avgRating +
+				", attributes=" + attributes +
+				", stock=" + stock +
+				", merchantName='" + merchantName + '\'' +
+				'}';
+	}
 }

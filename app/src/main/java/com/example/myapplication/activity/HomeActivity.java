@@ -41,7 +41,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class HomeActivity extends AppCompatActivity implements PopularProductsAdapter.OnCardListener, CategoryItemAdapter.OnCategoryNameListener, SearchView.OnQueryTextListener{
+public class HomeActivity extends AppCompatActivity implements PopularProductsAdapter.OnCardListener, CategoryItemAdapter.OnCategoryNameListener, SearchView.OnQueryTextListener {
 
     private Retrofit retrofit;
     private Call<BaseResponse<Home>> call;
@@ -67,7 +67,6 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
 
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
@@ -167,11 +166,16 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
                 Log.e("Check", t.getMessage());
             }
         });
+
+
+
+
+
     }
 
     @Override
     public void onCardClick(String id) {
-        Toast.makeText(HomeActivity.this, id, Toast.LENGTH_LONG).show();
+     //   Toast.makeText(HomeActivity.this, id, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, ProductDescriptionActivity.class);
         intent.putExtra("productId", id);
         startActivity(intent);
@@ -189,21 +193,20 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query)
-    {
+    public boolean onQueryTextSubmit(String query) {
         App.getApp().getRetrofit().create(APIInterface.class).getSearchList(query).enqueue(
                 new Callback<BaseResponse<List<SearchResponse>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<SearchResponse>>> call, Response<BaseResponse<List<SearchResponse>>> response) {
 
                         arraylist.clear();
-                        arraylist=response.body().getData();
+                        arraylist = response.body().getData();
                         adapter = new ListViewAdapter(HomeActivity.this, arraylist);
                         listView.setAdapter(adapter);
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Intent intent=new Intent(HomeActivity.this, ProductDetailsOnSearchActivity.class);
+                                Intent intent = new Intent(HomeActivity.this, ProductDetailsOnSearchActivity.class);
                                 startActivity(intent);
                             }
                         });
@@ -211,13 +214,14 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
 
                     @Override
                     public void onFailure(Call<BaseResponse<List<SearchResponse>>> call, Throwable t) {
-                        Log.e("Check",t.getMessage());
+                        Log.e("Check", t.getMessage());
                     }
 
                 });
         arraylist.clear();
         return false;
     }
+
     @Override
     public boolean onQueryTextChange(String newText) {
         listView.clearChoices();

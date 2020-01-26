@@ -15,6 +15,7 @@ import com.example.myapplication.pojo.*;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -51,5 +52,9 @@ public interface APIInterface {
 
     @GET("/search/{string}")
     Call<BaseResponse<List<SearchResponse>>> getSearchList(@Path("string") String str);
+
+    @POST("/cart/add/{customerId}")
+    Call<BaseResponse<AddToCartRequestBody>> updateCart(@Path("customerId") String string, @Body AddToCartRequestBody addToCartRequestBody);
+
 
 }
