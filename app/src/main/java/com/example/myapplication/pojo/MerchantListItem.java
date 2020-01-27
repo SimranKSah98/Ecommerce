@@ -7,8 +7,8 @@ public class MerchantListItem{
 	@SerializedName("merchantId")
 	private String merchantId;
 
-	@SerializedName("price")
-	private int price;
+	@SerializedName("productPrice")
+	private int productPrice;
 
 	@SerializedName("merchantRating")
 	private int merchantRating;
@@ -25,11 +25,11 @@ public class MerchantListItem{
 	}
 
 	public void setPrice(int price){
-		this.price = price;
+		this.productPrice = price;
 	}
 
 	public int getPrice(){
-		return price;
+		return productPrice;
 	}
 
 	public void setMerchantRating(int merchantRating){
@@ -53,7 +53,7 @@ public class MerchantListItem{
 		return 
 			"MerchantListItem{" + 
 			"merchantId = '" + merchantId + '\'' + 
-			",price = '" + price + '\'' + 
+			",price = '" + productPrice + '\'' +
 			",merchantRating = '" + merchantRating + '\'' + 
 			",merchantName = '" + merchantName + '\'' + 
 			"}";

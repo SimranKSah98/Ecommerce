@@ -26,7 +26,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/toolbar">
 
 
@@ -76,6 +76,7 @@
             android:background="@color/colorAccent"
             android:text="Add To Cart"
             android:textColor="#ffffff"
+            app:layout_constraintBottom_toTopOf="@+id/other_merchants"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -189,13 +190,29 @@
             android:layout_marginTop="14dp"
             android:text="TextView"
             android:typeface="serif"
+            app:layout_constraintBottom_toTopOf="@id/addToCart"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/productdesc" />
+
+        <TextView
+            android:id="@+id/other_merchants"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:text="See other merchants price :-"
+            android:textStyle="bold"
+            android:typeface="monospace"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addToCart" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     <androidx.recyclerview.widget.RecyclerView
+
         android:id="@+id/recycler_other_merchants"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/constraint_layout"
         android:layout_marginTop="8dp"

@@ -36,7 +36,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OrderHistoryActivity extends AppCompatActivity {
-    List<OrderHistory> orderHistoryList = new ArrayList<>();
+    List<OrderHistory> orderHistoryList = new ArrayList();
     OrderHistoryAdapter orderHistoryAdapter;
     private Toolbar toolbar;
     private RecyclerView recyclerView;

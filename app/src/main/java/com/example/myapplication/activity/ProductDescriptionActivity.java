@@ -22,6 +22,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -32,9 +34,11 @@ import com.example.myapplication.controller.APIInterface;
 import com.example.myapplication.pojo.AddToCartRequestBody;
 import com.example.myapplication.pojo.BaseResponse;
 import com.example.myapplication.pojo.CartResponse;
+import com.example.myapplication.pojo.CategoriesItem;
 import com.example.myapplication.pojo.MerchantListItem;
 import com.example.myapplication.pojo.ProductDescription;
 import com.example.myapplication.pojo.ProductsItem;
+import com.example.myapplication.pojo.SearchResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -51,10 +55,11 @@ import retrofit2.Retrofit;
 
 //import com.example.myapplication.activity.adapter.MerchantAdapter;
 
-public class ProductDescriptionActivity extends AppCompatActivity implements MerchantAdapter.OtherMerchantListener {
+    public class ProductDescriptionActivity extends AppCompatActivity implements MerchantAdapter.OtherMerchantListener {
     private Retrofit retrofit;
     private Call<BaseResponse<ProductDescription>> call;
     private Call<BaseResponse<CartResponse>> callAddToCart;
+    private Call<BaseResponse<List<SearchResponse>>> callOtherMerchant;
     private List<ProductDescription> list = new ArrayList();
     private ProgressBar progressBar;
     private ScaleGestureDetector scaleGestureDetector;
@@ -64,6 +69,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
     private Button addToCart;
     private Toolbar toolbar;
     private RecyclerView merchantrecyclerView;
+    private List<MerchantListItem> merchantList = new ArrayList();
     private RecyclerView commentView;
     private MerchantAdapter merchantAdapter;
     private ProductDescription productDescription;
@@ -71,15 +77,25 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
     private AddToCartRequestBody addToCartRequestBody = new AddToCartRequestBody();
     private String merchantId, name;
     private List<AddToCartRequestBody> guestCartList = new ArrayList();
+    LinearLayoutManager linearLayoutManager;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_description);
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
+        merchantrecyclerView=findViewById(R.id.recycler_other_merchants);
+        merchantAdapter=new MerchantAdapter(merchantList,this);
+         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        merchantrecyclerView.setLayoutManager(linearLayoutManager);
+        //    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(ProductDescriptionActivity.this, linearLayoutManager.getOrientation());
+        //  merchantrecyclerView.addItemDecoration(dividerItemDecoration);
+        merchantrecyclerView.setAdapter(merchantAdapter);
         initView();
         initAddToCart();
         initBottomNavigation();
+
     }
 
     private void initBottomNavigation() {
@@ -168,6 +184,33 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                 onBackPressed();
             }
         });
+        initRetrofitAndCallOtherMerchant();
+    }
+    public void initRetrofitAndCallOtherMerchant()
+    {
+//        retrofit = App.getApp().getRetrofit();
+     //   APIInterface api = retrofit.create(APIInterface.class);
+      //  callOtherMerchant = api.getOtherMerchants(pathVariable);
+        App.getApp().getRetrofit().create(APIInterface.class).getOtherMerchants(getIntent().getStringExtra("name")).enqueue(
+                new Callback<BaseResponse<List<MerchantListItem>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<MerchantListItem>>> call, Response<BaseResponse<List<MerchantListItem>>> response) {
+                      //  progressBar.setVisibility(View.INVISIBLE);
+                        merchantList.clear();
+                        merchantList.addAll(response.body().getData());
+                      //  searchPopularAdapter.notifyDataSetChanged();
+                        merchantAdapter.notifyItemRangeInserted(0,merchantList.size());
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<MerchantListItem>>> call, Throwable t) {
+                        Toast.makeText(ProductDescriptionActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+        );
+
+
     }
 
     private void apiCallback() {
@@ -179,6 +222,7 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                     productDescription = response.body().getData();
                     productName = findViewById(R.id.textView5);
                     productName.setText(productDescription.getName());
+                  //  pathVariable=productDescription.getName();
                     productPrice = (TextView) findViewById(R.id.textView6);
                     productPrice.setText(String.valueOf(productDescription.getPrice()));
                     merchantName = (TextView) findViewById(R.id.textView7);

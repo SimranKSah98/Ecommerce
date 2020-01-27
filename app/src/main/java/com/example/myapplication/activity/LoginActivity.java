@@ -197,7 +197,12 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             customerDetails = response.body();
                             progressBar.setVisibility(View.INVISIBLE);
-                            sendCartItem(requestBody.getCustomerEmail());
+                            if (sharedPreferences.contains("guestCart")) {
+                                sendCartItem(requestBody.getCustomerEmail());
+                            } else {
+                                login(requestBody.getCustomerEmail());
+                            }
+
                         }
                     }
 
@@ -224,15 +229,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(Call<BaseResponse<CartResponse>> call, Response<BaseResponse<CartResponse>> response) {
                         if (response.isSuccessful()) {
                             progressBar.setVisibility(View.INVISIBLE);
-                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.clear();
-                            editor.putString("customerEmailId", emailId);
-                            editor.putBoolean("login_details", true);
-                            editor.commit();
-                            Toast.makeText(LoginActivity.this, "Successfully Logged in", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                            startActivity(intent);
+                            login(emailId);
                         }
                     }
 
@@ -242,6 +239,18 @@ public class LoginActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.INVISIBLE);
                     }
                 });
+    }
+
+    private void login(String emailId) {
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.putString("customerEmailId", emailId);
+        editor.putBoolean("login_details", true);
+        editor.commit();
+        Toast.makeText(LoginActivity.this, "Successfully Logged in", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+        startActivity(intent);
     }
 
     @Override

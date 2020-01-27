@@ -43,7 +43,7 @@ public class PopularProductsAdapter extends RecyclerView.Adapter<PopularProducts
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onCardListener.onCardClick(productsItems.get(holder.getAdapterPosition()).getId());
+                onCardListener.onCardClick(productsItems.get(holder.getAdapterPosition()).getId(),productsItems.get(holder.getAdapterPosition()).getName());
             }
         });
     }
@@ -69,13 +69,13 @@ public class PopularProductsAdapter extends RecyclerView.Adapter<PopularProducts
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCardListener.onCardClick(productsItems.get(getAdapterPosition()).getId());
+                    onCardListener.onCardClick(productsItems.get(getAdapterPosition()).getId(),productsItems.get(getAdapterPosition()).getName());
                 }
             });
         }
     }
 
     public interface OnCardListener {
-        void onCardClick(String id);
+        void onCardClick(String id,String name);
     }
 }
