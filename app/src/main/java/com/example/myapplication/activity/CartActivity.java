@@ -115,11 +115,48 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Cartp
         btn_checkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btn_checkout.setVisibility(View.INVISIBLE);
-                btn_buy.setVisibility(View.VISIBLE);
+                SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
+                String email = sharedPreferences.getString("customerEmailId", "");
+                if (email.isEmpty()) {
+                    Intent intent = new Intent(CartActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(CartActivity.this, "Login before checking out", Toast.LENGTH_LONG).show();
+                } else {
+                    btn_checkout.setVisibility(View.INVISIBLE);
+                    btn_buy.setVisibility(View.VISIBLE);
+                }
             }
         });
         btn_buy = findViewById(R.id.buttonbuy);
+        btn_buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBar = findViewById(R.id.progress_bar);
+                progressBar.setVisibility(View.VISIBLE);
+                App.getApp().getRetrofit().create(APIInterface.class).buyNow(sharedPreferences.getString("customerEmailId", "")).enqueue(
+                        new Callback<BaseResponse<Boolean>>() {
+                            @Override
+                            public void onResponse(Call<BaseResponse<Boolean>> call, Response<BaseResponse<Boolean>> response) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                if (response.body().getData()) {
+                                    Toast.makeText(CartActivity.this, "Order Placed", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(CartActivity.this, HomeActivity.class));
+
+                                } else {
+                                    Toast.makeText(CartActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<BaseResponse<Boolean>> call, Throwable t) {
+                                Toast.makeText(CartActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                );
+
+            }
+        });
         cartRecyclerView.setLayoutManager(layoutManager);
         cartRecyclerView.setItemAnimator(new DefaultItemAnimator());
         cartRecyclerView.setAdapter(cartAdapter);
@@ -173,8 +210,13 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Cartp
                     if (response.isSuccessful()) {
                         progressBar.setVisibility(View.INVISIBLE);
                         cartResponse = response.body().getData();
-                        cartItems.addAll(cartResponse.getProductsBought());
-                        cartAdapter.notifyDataSetChanged();
+                        if (cartResponse.getProductsBought().isEmpty()) {
+                            Toast.makeText(CartActivity.this, "No products in cart", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(CartActivity.this, HomeActivity.class));
+                        } else {
+                            cartItems.addAll(cartResponse.getProductsBought());
+                            cartAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
 
