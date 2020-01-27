@@ -55,7 +55,7 @@ import retrofit2.Retrofit;
 
 //import com.example.myapplication.activity.adapter.MerchantAdapter;
 
-    public class ProductDescriptionActivity extends AppCompatActivity implements MerchantAdapter.OtherMerchantListener {
+public class ProductDescriptionActivity extends AppCompatActivity implements MerchantAdapter.OtherMerchantListener {
     private Retrofit retrofit;
     private Call<BaseResponse<ProductDescription>> call;
     private Call<BaseResponse<CartResponse>> callAddToCart;
@@ -85,9 +85,9 @@ import retrofit2.Retrofit;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_description);
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
-        merchantrecyclerView=findViewById(R.id.recycler_other_merchants);
-        merchantAdapter=new MerchantAdapter(merchantList,this);
-         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        merchantrecyclerView = findViewById(R.id.recycler_other_merchants);
+        merchantAdapter = new MerchantAdapter(merchantList, this);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         merchantrecyclerView.setLayoutManager(linearLayoutManager);
         //    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(ProductDescriptionActivity.this, linearLayoutManager.getOrientation());
         //  merchantrecyclerView.addItemDecoration(dividerItemDecoration);
@@ -184,22 +184,19 @@ import retrofit2.Retrofit;
                 onBackPressed();
             }
         });
-        initRetrofitAndCallOtherMerchant();
     }
-    public void initRetrofitAndCallOtherMerchant()
-    {
-//        retrofit = App.getApp().getRetrofit();
-     //   APIInterface api = retrofit.create(APIInterface.class);
-      //  callOtherMerchant = api.getOtherMerchants(pathVariable);
-        App.getApp().getRetrofit().create(APIInterface.class).getOtherMerchants(getIntent().getStringExtra("name")).enqueue(
+
+    public void initRetrofitAndCallOtherMerchant() {
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+        App.getApp().getRetrofit().create(APIInterface.class).getOtherMerchants(productName.getText().toString()).enqueue(
                 new Callback<BaseResponse<List<MerchantListItem>>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<List<MerchantListItem>>> call, Response<BaseResponse<List<MerchantListItem>>> response) {
-                      //  progressBar.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
                         merchantList.clear();
                         merchantList.addAll(response.body().getData());
-                      //  searchPopularAdapter.notifyDataSetChanged();
-                        merchantAdapter.notifyItemRangeInserted(0,merchantList.size());
+                        merchantAdapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -222,7 +219,7 @@ import retrofit2.Retrofit;
                     productDescription = response.body().getData();
                     productName = findViewById(R.id.textView5);
                     productName.setText(productDescription.getName());
-                  //  pathVariable=productDescription.getName();
+                    //  pathVariable=productDescription.getName();
                     productPrice = (TextView) findViewById(R.id.textView6);
                     productPrice.setText(String.valueOf(productDescription.getPrice()));
                     merchantName = (TextView) findViewById(R.id.textView7);
@@ -237,6 +234,7 @@ import retrofit2.Retrofit;
                     Glide.with(productImage.getContext()).load(productDescription.getImage()).into(productImage);
                     merchantId = productDescription.getMerchantId();
                     name = productDescription.getName();
+                    initRetrofitAndCallOtherMerchant();
                 }
             }
 
