@@ -137,9 +137,11 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Cartp
                         new Callback<BaseResponse<Boolean>>() {
                             @Override
                             public void onResponse(Call<BaseResponse<Boolean>> call, Response<BaseResponse<Boolean>> response) {
-                                progressBar.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.INVISIBLE);
                                 if (response.body().getData()) {
+                                    Toast.makeText(CartActivity.this, "Order Placed", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(CartActivity.this, HomeActivity.class));
+
                                 } else {
                                     Toast.makeText(CartActivity.this, "Error", Toast.LENGTH_SHORT).show();
                                 }
@@ -244,7 +246,8 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Cartp
             App.getApp().getRetrofit().create(APIInterface.class).updateCart(sharedPreferences.getString("customerEmailId", ""), addToCartRequestBody).enqueue(
                     new Callback<BaseResponse<CartResponse>>() {
                         @Override
-                        public void onResponse(Call<BaseResponse<CartResponse>> call, Response<BaseResponse<CartResponse>> response) {
+                        public void onResponse(Call<BaseResponse<CartResponse>> call, Response<BaseResponse<CartResponse>> response)
+                        {
                             Toast.makeText(CartActivity.this, "Updated Cart Item", Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.INVISIBLE);
                             if (newValue == 0) {

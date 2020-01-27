@@ -35,8 +35,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class OrderHistoryActivity extends AppCompatActivity {
-    List<OrderHistory> orderHistoryList = new ArrayList();
+public class OrderHistoryActivity extends AppCompatActivity implements OrderHistoryAdapter.OnCardListener{
+    List<OrderHistory> orderHistoryList = new ArrayList<>();
     OrderHistoryAdapter orderHistoryAdapter;
     private Toolbar toolbar;
     private RecyclerView recyclerView;
@@ -56,7 +56,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.orderhistory);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(OrderHistoryActivity.this, 2);
         recyclerView.setLayoutManager(layoutManager);
-        orderHistoryAdapter = new OrderHistoryAdapter(orderHistoryList);
+        orderHistoryAdapter = new OrderHistoryAdapter(orderHistoryList,this);
         recyclerView.setAdapter(orderHistoryAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
@@ -133,5 +133,12 @@ public class OrderHistoryActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    @Override
+    public void onCardClick(String id) {
+        Intent intent=new Intent(OrderHistoryActivity.this,RatingActivity.class);
+        intent.putExtra("productId",id);
+        startActivity(intent);
     }
 }

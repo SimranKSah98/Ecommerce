@@ -30,6 +30,8 @@
 
 
         <activity android:name=".activity.ProductDescriptionActivity" />
+        <activity android:name=".activity.LoginHistoryActivity" />
+        <activity android:name=".activity.RatingActivity" />
         <activity android:name=".activity.ProductDetailsOnSearchActivity" />
         <activity android:name=".activity.HomeActivity">
 
