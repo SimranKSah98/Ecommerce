@@ -10,8 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.myapplication.R;
 import com.example.myapplication.pojo.MerchantListItem;
+import com.example.myapplication.pojo.SearchResponse;
 
 import java.util.List;
 
@@ -20,6 +23,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class MerchantAdapter extends RecyclerView.Adapter<MerchantAdapter.ViewHolder> {
 
     List<MerchantListItem> merchantListItemList;
+  //  List<SearchResponse> searchResponses;
+
     private OtherMerchantListener otherMerchantListener;
 
 
@@ -36,17 +41,14 @@ public class MerchantAdapter extends RecyclerView.Adapter<MerchantAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull final MerchantAdapter.ViewHolder holder, int position) {
-        holder.name.setText(merchantListItemList.get(position).getMerchantName());
-        holder.price.setText(merchantListItemList.get(position).getPrice());
-        holder.rating.setText(merchantListItemList.get(position).getMerchantRating());
+     //   holder.name.setText(merchantListItemList.get(position).getMerchantName());
+        holder.price.setText(String.valueOf(merchantListItemList.get(position).getPrice()));
+      //  holder.rating.setText(merchantListItemList.get(position).getMerchantRating());
 
-//        SharedPreferences sharedPreferences = getSharedPreferences("com.example.myapplication.activity", MODE_PRIVATE);
-//        String customerId=sharedPreferences.getString("customerId","");
-//        otherMerchantListener.onMerchnatClick(merchantListItemList.get(holder.getAdapterPosition()).ge);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                otherMerchantListener.onMerchnatClick(merchantListItemList.get(holder.getAdapterPosition()));
+               // otherMerchantListener.onMerchnatClick(merchantListItemList.get(holder.getAdapterPosition()));
             }
         });
 
@@ -64,9 +66,9 @@ public class MerchantAdapter extends RecyclerView.Adapter<MerchantAdapter.ViewHo
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.other_merchant_name);
+          //  name = itemView.findViewById(R.id.other_merchant_name);
             price = itemView.findViewById(R.id.other_merchant_product_price);
-            rating = itemView.findViewById(R.id.rating);
+           // rating = itemView.findViewById(R.id.rating);
             cardView=itemView.findViewById(R.id.merchant_card_view);
         }
     }

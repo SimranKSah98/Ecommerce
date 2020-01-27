@@ -70,4 +70,10 @@ public interface APIInterface {
 
     @GET("/cart/buyNow/{customerEmailId}")
     Call<BaseResponse<Boolean>> buyNow(@Path("customerEmailId") String string);
+
+    @GET("search/{productName}")
+    Call<BaseResponse<List<MerchantListItem>>> getOtherMerchants(@Path ("productName") String productName);
+//
+//    @GET("/{merchantId}")
+//    Call<BaseResponse<MerchantInfo>> getMerchantInfo(@Path "merchantId" String merchantId);
 }

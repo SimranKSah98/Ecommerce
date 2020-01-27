@@ -202,9 +202,11 @@ public class HomeActivity extends AppCompatActivity implements PopularProductsAd
     }
 
     @Override
-    public void onCardClick(String id) {
+    public void onCardClick(String id,String name) {
         Intent intent = new Intent(this, ProductDescriptionActivity.class);
         intent.putExtra("productId", id);
+        intent.putExtra("name",name);
+
         startActivity(intent);
     }
 
