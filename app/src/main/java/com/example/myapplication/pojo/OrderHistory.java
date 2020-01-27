@@ -3,6 +3,8 @@ package com.example.myapplication.pojo;
 import com.google.gson.annotations.SerializedName;
 
 public class OrderHistory {
+    @SerializedName("historyId")
+    private String historyId;
     @SerializedName("productId")
     private String productId;
     @SerializedName("customerId")
@@ -14,13 +16,38 @@ public class OrderHistory {
     @SerializedName("productPrice")
     private String productPrice;
     @SerializedName("productQuantity")
-    private String productQuantity;
+    private int productQuantity;
     @SerializedName("orderId")
     private String orderId;
     @SerializedName("orderDate")
     private String orderDate;
     @SerializedName("timeInMillis")
-    private String timeInMillis;
+    private long timeInMillis;
+
+    public int getProductQuantity() {
+        return productQuantity;
+    }
+
+    public long getTimeInMillis() {
+        return timeInMillis;
+    }
+
+    public String getHistoryId() {
+        return historyId;
+    }
+
+    public void setHistoryId(String historyId) {
+        this.historyId = historyId;
+    }
+
+
+    public void setProductQuantity(int productQuantity) {
+        this.productQuantity = productQuantity;
+    }
+
+    public void setTimeInMillis(long timeInMillis) {
+        this.timeInMillis = timeInMillis;
+    }
 
     public String getProductId() {
         return productId;
@@ -62,13 +89,6 @@ public class OrderHistory {
         this.productPrice = productPrice;
     }
 
-    public String getProductQuantity() {
-        return productQuantity;
-    }
-
-    public void setProductQuantity(String productQuantity) {
-        this.productQuantity = productQuantity;
-    }
 
     public String getOrderId() {
         return orderId;
@@ -84,13 +104,5 @@ public class OrderHistory {
 
     public void setOrderDate(String orderDate) {
         this.orderDate = orderDate;
-    }
-
-    public String getTimeInMillis() {
-        return timeInMillis;
-    }
-
-    public void setTimeInMillis(String timeInMillis) {
-        this.timeInMillis = timeInMillis;
     }
 }

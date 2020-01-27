@@ -1,7 +1,6 @@
 package com.example.myapplication.controller;
 
 import com.example.myapplication.pojo.BaseResponse;
-import com.example.myapplication.pojo.CartItem;
 import com.example.myapplication.pojo.CartResponse;
 import com.example.myapplication.pojo.Home;
 import com.example.myapplication.pojo.ProductDescription;
@@ -35,14 +34,8 @@ public interface APIInterface {
     @GET("customer/details/{customerEmailId}")
     Call<BaseResponse<Customer>> getCustomerdetails(@Path("customerEmailId") String string);
 
-    @GET("search/{text}")
-    Call<List<ProductDetails>> getsearchlist(@Path("text") String string);
-
     @GET("home")
     Call<BaseResponse<Home>> getProducts();
-
-    @GET("category/product/{categoryid}")
-    Call<BaseResponse<Home>> getCategoryProducts(@Path("categoryid") String categoryId);
 
     @GET("product/description/{id}")
     Call<BaseResponse<ProductDescription>> getProductDescription(@Path("id") String productId);
@@ -59,6 +52,9 @@ public interface APIInterface {
     @GET("customer/order-history/{span}/{customerEmailId}")
     Call<BaseResponse<List<OrderHistory>>> getorderhistory(@Path("span") int span, @Path("customerEmailId") String userId);
 
+    @GET("customer/loginHistory/{customerEmailId}")
+    Call<BaseResponse<List<LoginHistory>>> getloginhistory(@Path("customerEmailId") String userId);
+
     @GET("home/{categoryId}")
     Call<BaseResponse<CategoriesItem>> getRespectiveCategoryProducts(@Path("categoryId") String categoryId);
 
@@ -67,5 +63,12 @@ public interface APIInterface {
 
     @POST("/cart/mergeCart/{customerId}")
     Call<BaseResponse<CartResponse>> sendCartItemOnLogin(@Path("customerId") String string, @Body List<AddToCartRequestBody> addToCartRequestBody);
+
+    @GET("/merchant/setProductRating/{rating}/{productid}")
+    Call<BaseResponse<Integer>> setProductRating(@Path("rating") int rating, @Path("productid") String productid);
+
+    @GET("/merchant/getProductRating/{rating}")
+    Call<BaseResponse<Integer>> getProductRating(@Path("rating") int rating);
+
 
 }

@@ -204,7 +204,8 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Cartp
             App.getApp().getRetrofit().create(APIInterface.class).updateCart(sharedPreferences.getString("customerEmailId", ""), addToCartRequestBody).enqueue(
                     new Callback<BaseResponse<CartResponse>>() {
                         @Override
-                        public void onResponse(Call<BaseResponse<CartResponse>> call, Response<BaseResponse<CartResponse>> response) {
+                        public void onResponse(Call<BaseResponse<CartResponse>> call, Response<BaseResponse<CartResponse>> response)
+                        {
                             Toast.makeText(CartActivity.this, "Updated Cart Item", Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.INVISIBLE);
                             if (newValue == 0) {

@@ -21,9 +21,11 @@ import java.util.List;
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.ViewHolder> {
 
     List<OrderHistory> orderHistoryList;
+    OnCardListener onCardListener;
 
-    public OrderHistoryAdapter(List<OrderHistory> orderHistoryList) {
+    public OrderHistoryAdapter(List<OrderHistory> orderHistoryList, OnCardListener onCardListener) {
         this.orderHistoryList = orderHistoryList;
+        this.onCardListener=onCardListener;
     }
 
     @NonNull
@@ -33,12 +35,18 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull OrderHistoryAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final OrderHistoryAdapter.ViewHolder holder, int position) {
         holder.orderId.setText(orderHistoryList.get(holder.getAdapterPosition()).getOrderId());
         Glide.with(holder.imageView.getContext()).applyDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.ic_launcher_foreground)).load(orderHistoryList.get(holder.getAdapterPosition()).getProductImage()).into(holder.imageView);
         holder.productName.setText(orderHistoryList.get(holder.getAdapterPosition()).getProductName());
         holder.productPrice.setText(String.valueOf(orderHistoryList.get(holder.getAdapterPosition()).getProductPrice()));
         holder.orderdate.setText(orderHistoryList.get(holder.getAdapterPosition()).getOrderDate());
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCardListener.onCardClick(orderHistoryList.get(holder.getAdapterPosition()).getProductId());
+            }
+        });
     }
 
     @Override
@@ -60,5 +68,8 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             imageView = itemView.findViewById(R.id.image_view);
             cardView = itemView.findViewById(R.id.home_popular_products);
         }
+    }
+    public interface OnCardListener {
+        void onCardClick(String id);
     }
 }

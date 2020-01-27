@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,7 +71,9 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
     private ProductsItem productsItem;
     private AddToCartRequestBody addToCartRequestBody = new AddToCartRequestBody();
     private String merchantId, name;
+    private RatingBar ratingBar;
     private List<AddToCartRequestBody> guestCartList = new ArrayList();
+    private int getRating;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -193,6 +196,31 @@ public class ProductDescriptionActivity extends AppCompatActivity implements Mer
                     Glide.with(productImage.getContext()).load(productDescription.getImage()).into(productImage);
                     merchantId = productDescription.getMerchantId();
                     name = productDescription.getName();
+                    ratingBar = findViewById(R.id.ratingBar);
+                    progressBar = findViewById(R.id.progress_bar);
+                    progressBar.setVisibility(View.VISIBLE);
+                    App.getApp().getRetrofit().create(APIInterface.class).getProductRating((int) ratingBar.getRating()).enqueue(
+                            new Callback<BaseResponse<Integer>>() {
+                                @Override
+                                public void onResponse(Call<BaseResponse<Integer>> call, Response<BaseResponse<Integer>> response) {
+                                    if (response != null && response.body() != null) {
+                                        getRating = response.body().getData();
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                        ratingBar.setRating(getRating);
+                                    } else {
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                        ratingBar.setRating(0);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
+                                    Toast.makeText(ProductDescriptionActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                }
+                            }
+                    );
+
                 }
             }
 

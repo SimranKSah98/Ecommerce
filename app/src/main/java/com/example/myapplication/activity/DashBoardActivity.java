@@ -30,7 +30,7 @@ import retrofit2.Retrofit;
 
 public class DashBoardActivity extends AppCompatActivity {
 
-    private Button logout, orderhistory;
+    private Button logout, orderhistory,loginhistory;
     private Retrofit retrofit;
     private Call<BaseResponse<Customer>> call;
     private Customer customer;
@@ -48,6 +48,7 @@ public class DashBoardActivity extends AppCompatActivity {
         retrofitAndApiCall();
         apicallback();
         initOrderhistory();
+        initLoginHistory();
     }
 
     private void initView() {
@@ -152,6 +153,17 @@ public class DashBoardActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(DashBoardActivity.this, OrderHistoryActivity.class);
                 intent.putExtra("customeremailid", customer.getEmailId());
+                startActivity(intent);
+            }
+        });
+    }
+    private void initLoginHistory(){
+        loginhistory=findViewById(R.id.loginhistory);
+        loginhistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(DashBoardActivity.this, LoginHistoryActivity.class);
+                intent.putExtra("customeremailid",customer.getEmailId());
                 startActivity(intent);
             }
         });
